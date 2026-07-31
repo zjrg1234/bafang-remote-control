@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>指尖无界 - 随时随地，掌控世界</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        }
+
+        body {
+            color: #333;
+            line-height: 1.6;
+        }
+
+        /* 导航栏 */
+        header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            z-index: 999;
+        }
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #333;
+            text-decoration: none;
+        }
+        .logo-icon {
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, #4ade80, #22c55e);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+        nav a {
+            margin-left: 2rem;
+            text-decoration: none;
+            color: #666;
+            transition: color 0.3s;
+        }
+        nav a:hover {
+            color: #22c55e;
+        }
+
+        /* 首屏 Hero 区 */
+        .hero {
+            background: #333;
+            color: white;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            padding: 8rem 2rem 4rem;
+            overflow: hidden;
+        }
+        .hero-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+        }
+        .hero-text h1 {
+            font-size: 3.5rem;
+            line-height: 1.2;
+            margin-bottom: 1rem;
+        }
+        .hero-text p {
+            color: #aaa;
+            font-size: 1.1rem;
+            margin-bottom: 2rem;
+        }
+        .download-btn {
+            display: inline-block;
+            background: #22c55e;
+            color: white;
+            padding: 0.875rem 2.5rem;
+            border-radius: 999px;
+            text-decoration: none;
+            font-weight: 500;
+            margin-bottom: 1.5rem;
+            transition: background 0.3s;
+        }
+        .download-btn:hover {
+            background: #16a34a;
+        }
+        .store-badges {
+            display: flex;
+            gap: 1rem;
+        }
+        .store-badge {
+            background: white;
+            color: #333;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            font-size: 0.875rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+        }
+        .hero-phone {
+            display: flex;
+            justify-content: center;
+        }
+        .phone-mockup {
+            width: 280px;
+            background: white;
+            border-radius: 32px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        .phone-header {
+            background: #f9fafb;
+            padding: 0.75rem 1rem;
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.875rem;
+            color: #333;
+        }
+        .phone-content {
+            background: white;
+            padding: 1rem;
+        }
+        .tab-bar {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+        .tab-bar span {
+            padding: 0.25rem 0.75rem;
+            border-radius: 999px;
+            font-size: 0.875rem;
+            color: #666;
+        }
+        .tab-bar span.active {
+            background: #f3f4f6;
+            color: #333;
+            font-weight: 500;
+        }
+        .scene-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.75rem;
+        }
+        .scene-card {
+            border-radius: 12px;
+            overflow: hidden;
+            background: #f3f4f6;
+            position: relative;
+            height: 140px;
+        }
+        .scene-card .tag {
+            position: absolute;
+            bottom: 8px;
+            left: 8px;
+            background: rgba(0,0,0,0.6);
+            color: white;
+            font-size: 0.7rem;
+            padding: 0.125rem 0.5rem;
+            border-radius: 4px;
+        }
+        .scene-card .status {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: #22c55e;
+            color: white;
+            font-size: 0.65rem;
+            padding: 0.125rem 0.375rem;
+            border-radius: 4px;
+        }
+        .phone-footer {
+            display: flex;
+            justify-content: space-around;
+            padding: 0.75rem;
+            border-top: 1px solid #eee;
+            font-size: 0.75rem;
+            color: #666;
+        }
+        .phone-footer .active {
+            color: #22c55e;
+        }
+
+        /* 亮点区 */
+        .features {
+            padding: 6rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+        }
+        .feature-list {
+            display: flex;
+            flex-direction: column;
+            gap: 2.5rem;
+        }
+        .feature-item {
+            display: flex;
+            gap: 1.5rem;
+        }
+        .feature-icon {
+            width: 56px;
+            height: 56px;
+            background: #22c55e;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+        .feature-text h3 {
+            font-size: 1.25rem;
+            margin-bottom: 0.5rem;
+        }
+        .feature-text p {
+            color: #666;
+        }
+
+        /* 联系我们 */
+        .contact {
+            padding: 6rem 2rem;
+            background: #f9fafb;
+            text-align: center;
+        }
+        .contact h2 {
+            font-size: 2rem;
+            margin-bottom: 3rem;
+        }
+        .contact-form {
+            max-width: 550px;
+            margin: 0 auto;
+            background: white;
+            padding: 2.5rem;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+        }
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        .contact-form input,
+        .contact-form textarea {
+            width: 100%;
+            padding: 0.875rem 1rem;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            font-size: 1rem;
+        }
+        .contact-form textarea {
+            min-height: 180px;
+            resize: vertical;
+            margin-bottom: 1.5rem;
+        }
+        .submit-btn {
+            background: #22c55e;
+            color: white;
+            border: none;
+            padding: 0.875rem 2rem;
+            border-radius: 999px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        .submit-btn:hover {
+            background: #16a34a;
+        }
+
+        /* 页脚 */
+        footer {
+            background: #1f2937;
+            color: #9ca3af;
+            padding: 1.5rem;
+            text-align: center;
+            font-size: 0.9rem;
+        }
+
+        /* 响应式适配 */
+        @media (max-width: 768px) {
+            .hero-container,
+            .features {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+            .hero-text h1 {
+                font-size: 2.25rem;
+            }
+            .store-badges {
+                justify-content: center;
+            }
+            .feature-item {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+            }
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+            nav {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+<!-- 导航栏 -->
+<header>
+    <div class="nav-container">
+        <a href="#" class="logo">
+            <div class="logo-icon">指</div>
+            指尖无界
+        </a>
+        <nav>
+            <a href="#home">首页</a>
+            <a href="#features">服务</a>
+            <a href="#contact">联系我们</a>
+        </nav>
+    </div>
+</header>
+
+<!-- 首屏 Hero -->
+<section class="hero" id="home">
+    <div class="hero-container">
+        <div class="hero-text">
+            <h1>身边便捷服务</h1>
+            <p>随时随地，为您服务</p>
+            <a href="#" class="download-btn">下载</a>
+            <div class="store-badges">
+                <a href="#" class="store-badge">
+                    <span></span> App Store
+                </a>
+                <a href="#" class="store-badge">
+                    <span>▶</span> Google Play
+                </a>
+            </div>
+        </div>
+        <div class="hero-phone">
+            <div class="phone-mockup">
+                <div class="phone-header">
+                    <span>13:28</span>
+                    <span>93%</span>
+                </div>
+                <div class="phone-content">
+                    <div class="tab-bar">
+                        <span class="active">全部</span>
+                        <span>遥控车</span>
+                        <span>越野车</span>
+                        <span>工程车</span>
+                    </div>
+                    <div class="scene-grid">
+                        <div class="scene-card" style="background: linear-gradient(135deg, #86efac, #22c55e);">
+                            <div class="status">在线 0 | 驾驶 0</div>
+                            <div class="tag">曼岛TT赛场 · 遥控车</div>
+                        </div>
+                        <div class="scene-card" style="background: linear-gradient(135deg, #fcd34d, #f59e0b);">
+                            <div class="status">在线 0 | 驾驶 0</div>
+                            <div class="tag">摩纳哥的街道赛 · 工程车</div>
+                        </div>
+                        <div class="scene-card" style="background: linear-gradient(135deg, #93c5fd, #3b82f6);">
+                            <div class="status">在线 0 | 驾驶 0</div>
+                            <div class="tag">RC山地越野 · 越野车</div>
+                        </div>
+                        <div class="scene-card" style="background: linear-gradient(135deg, #a78bfa, #7c3aed);">
+                            <div class="status">在线 0 | 驾驶 0</div>
+                            <div class="tag">云端观景 · 遥控车</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="phone-footer">
+                    <div class="active">首页</div>
+                    <div>我的</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 亮点/服务区 -->
+<section class="features" id="features">
+    <div class="hero-phone">
+        <div class="phone-mockup">
+            <div class="phone-header">
+                <span>13:28</span>
+                <span>93%</span>
+            </div>
+            <div class="phone-content">
+                <div class="tab-bar">
+                    <span class="active">全部</span>
+                    <span>遥控车</span>
+                    <span>越野车</span>
+                    <span>工程车</span>
+                </div>
+                <div class="scene-grid">
+                    <div class="scene-card" style="background: linear-gradient(135deg, #86efac, #22c55e);">
+                        <div class="status">在线 0 | 驾驶 0</div>
+                        <div class="tag">曼岛TT赛场 · 遥控车</div>
+                    </div>
+                    <div class="scene-card" style="background: linear-gradient(135deg, #fcd34d, #f59e0b);">
+                        <div class="status">在线 0 | 驾驶 0</div>
+                        <div class="tag">摩纳哥的街道赛 · 工程车</div>
+                    </div>
+                    <div class="scene-card" style="background: linear-gradient(135deg, #93c5fd, #3b82f6);">
+                        <div class="status">在线 0 | 驾驶 0</div>
+                        <div class="tag">RC山地越野 · 越野车</div>
+                    </div>
+                    <div class="scene-card" style="background: linear-gradient(135deg, #a78bfa, #7c3aed);">
+                        <div class="status">在线 0 | 驾驶 0</div>
+                        <div class="tag">云端观景 · 遥控车</div>
+                    </div>
+                </div>
+            </div>
+            <div class="phone-footer">
+                <div class="active">首页</div>
+                <div>我的</div>
+            </div>
+        </div>
+    </div>
+    <div class="feature-list">
+        <div class="feature-item">
+            <div class="feature-icon"></div>
+            <div class="feature-text">
+                <h3>同步数据</h3>
+                <p>数据云端同步，多设备无缝衔接</p>
+            </div>
+        </div>
+        <div class="feature-item">
+            <div class="feature-icon"></div>
+            <div class="feature-text">
+                <h3>车辆安全</h3>
+                <p>平台全天监控，保证您的车辆安全</p>
+            </div>
+        </div>
+        <div class="feature-item">
+            <div class="feature-icon"></div>
+            <div class="feature-text">
+                <h3>位置分享</h3>
+                <p>分享位置给你的好友，一起探索世界</p>
+            </div>
+        </div>
+        <div class="feature-item">
+            <div class="feature-icon"></div>
+            <div class="feature-text">
+                <h3>全国服务</h3>
+                <p>任何位置，随时服务</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 联系我们 -->
+<section class="contact" id="contact">
+    <h2>联系我们</h2>
+    <form class="contact-form">
+        <div class="form-row">
+            <input type="text" placeholder="姓名" required>
+            <input type="email" placeholder="邮箱" required>
+        </div>
+        <textarea placeholder="请输入内容" required></textarea>
+        <button type="submit" class="submit-btn">留言</button>
+    </form>
+    <div style="margin-top: 2rem; font-size: 0.875rem; color: #666;">
+        <p>苏ICP备2025228004号-2A &nbsp;|&nbsp; 苏公网安备 32132402000786号</p>
+    </div>
+</section>
+
+<!-- 页脚 -->
+<footer>
+    <p>Copyright © 2025 宿迁星智慧科技有限公司. All rights reserved.</p>
+</footer>
+</body>
+</html>
