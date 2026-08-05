@@ -178,4 +178,9 @@ class IndexController extends Controller
         return $this->service->lockDriving($request);
 
     }
+
+    public function wechatJsapiDeposit(Request $request)
+    {
+        return $this->service->wechatJsapiDeposit($request);
+    }
 }

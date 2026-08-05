@@ -116,6 +116,72 @@ class WechatPayV3Service{
     }
 
     /**
+     * 创建小程序JSAPI订单
+     * @param string $outTradeNo 商户订单号
+     * @param float $totalAmount 订单金额（元）
+     * @param string $description 商品描述
+     * @return array jsapi
+     * @throws GuzzleException
+     */
+    public function createJsapiOrder($data)
+    {
+        // 实际业务中应从请求或数据库中获取订单信息，这里作演示
+        $orderSn = $data['order_no'];
+        $amount = $data['amount'] * 100; // 金额先按照0.01来 实际金额需要*100
+        $description = '电池购买';
+        $openid = $data['openid']; // ⚠️ 小程序必传！漏传无法下单
+
+        $resp = $this->instance->chain('v3/pay/transactions/jsapi')->post([
+            'json' => [
+                'mchid'        => config('wechat.mchid'),
+                'out_trade_no' => $orderSn,
+                'appid'        => config('wechat.appid'),
+                'description'  => $description,
+                'notify_url'   => env('WECHAT_PAY_NOTIFY_URL'),
+                'amount'       => [
+                    'total'    => (int)$amount,
+                    'currency' => 'CNY'
+                ],
+                'payer' => [ // ✅ JSAPI 必须带上payer.openid！！你原版缺失
+                    'openid' => $openid
+                ],
+                // 支付超时5分钟，标准RFC3339格式
+                'time_expire' => date('Y-m-d\TH:i:s+08:00', time() + 300),
+            ]
+        ]);
+
+        $result = json_decode($resp->getBody(), true);
+        $prepayId = $result['prepay_id'];
+
+        // ======================
+        // ✅ 小程序 JSAPI 调起支付签名规则（官方标准）
+        // ======================
+        $timeStamp = (string)time();
+        $nonceStr  = Formatter::nonce();
+        $package   = "prepay_id={$prepayId}";
+
+        // 签名原文顺序：appId\n + timeStamp\n + nonceStr\n + package\n
+        $message = implode("\n", [
+                config('wechat.appid'),
+                $timeStamp,
+                $nonceStr,
+                $package,
+            ]) . "\n";
+
+//        $sign = Rsa::sign($message, $this->merchantPrivateKey);
+        $sign = Rsa::sign($message, $this->instance['privateKey']);
+
+        return [
+            'timeStamp' => $timeStamp,
+            'nonceStr'  => $nonceStr,
+            'package'   => "prepay_id={$prepayId}",
+            'signType'  => 'RSA',
+            'paySign'   => $sign
+        ];
+
+    }
+
+    /**
      * 验证支付回调通知的签名
      * @param string $body 回调原始数据
      * @param string $serial 微信平台证书序列号
@@ -226,4 +292,37 @@ class WechatPayV3Service{
         $response = $this->client->get("/v3/pay/transactions/out-trade-no/{$outTradeNo}?mchid={$this->config['mch_id']}");
         return json_decode($response->getBody()->getContents(), true);
     }
+
+    public function verifyNotifySign(string $body, string $signature, string $timestamp, string $nonce, string $serial): bool
+    {
+        try {
+            // 1. 时间校验：微信要求时间差不超过5分钟（300秒），防重放攻击
+            $now = time();
+            if (abs($now - (int)$timestamp) > 300) {
+                Log::warning("微信回调时间戳超出允许范围", compact('timestamp','now'));
+                return false;
+            }
+
+            // 2. 根据header传入的serial，找到对应微信公钥对象（你构造函数内certs数组）
+            if (!isset($this->instance['certs'][$serial])) {
+                Log::error("找不到序列号对应的微信公钥", compact('serial'));
+                return false;
+            }
+            $wechatPublicKey = $this->instance['certs'][$serial];
+
+            // 3. 【官方标准规则】拼接验签原文：body\n + timestamp\n + nonce\n
+            $message = Formatter::joinedByLineFeed($body, $timestamp, $nonce);
+
+            // 4. RSA验签
+            return Rsa::verify($message, $signature, $wechatPublicKey);
+        } catch (\Exception $e) {
+            Log::error("微信回调签名校验异常：" . $e->getMessage(), [
+                'serial' => $serial,
+                'timestamp' => $timestamp,
+                'exception' => $e->getTraceAsString()
+            ]);
+            return false;
+        }
+    }
+
 }

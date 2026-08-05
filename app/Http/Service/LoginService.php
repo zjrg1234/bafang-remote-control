@@ -9,6 +9,7 @@ use App\Models\Banner;
 use App\Models\CuserAgent;
 use App\Models\Cuser;
 use App\Models\ReponseData;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Redis;
 use Illuminate\Support\Facades\Validator;
@@ -916,6 +917,97 @@ class LoginService
                 'code' => 2000,
                 'msg' => '系统错误：' . $e->getMessage()
             ]);
+        }
+    }
+
+
+    public function wechatAppletLogin($request)
+    {
+
+        $jsCode = $request['login_code'];
+        $phoneCode = $request['phone_code'];
+
+
+        if (empty($jsCode)) {
+            return response()->json([
+                'code' => 2000,
+                'msg'  => 'code不能为空'
+            ]);
+        }
+
+        $appId     = env('WECHAT_MINI_APPID');
+        $appSecret = env('WECHAT_MINI_SECRET');
+
+        $url = "https://api.weixin.qq.com/sns/jscode2session?appid={$appId}&secret={$appSecret}&js_code={$jsCode}&grant_type=authorization_code";
+        $resp = Http::get($url)->json();
+
+        if (isset($resp['errcode']) && $resp['errcode'] != 0) {
+            return response()->json([
+                'code' => 2000,
+                'msg'  => '微信登录失败：' . $resp['errmsg']
+            ]);
+        }
+
+        $openid = $resp['openid'];
+        $sessionKey = $resp['session_key'];
+
+        //先到这 后续还需要mini_oepnid 持久登陆使用
+        // 2. 获取手机号
+        $wechatLoginService = new WechatLoginService();
+        try {
+            $mobile = $wechatLoginService->getWxMobile($phoneCode);
+            $userInfo = $this->repo->getUserByMobile($mobile);
+            if(!isset($userInfo)) {
+//                        $minId = CuserAgent::query()->where('level', 1)->min('id');
+//                        $maxId = CuserAgent::query()->where('level', 1)->max('id');
+//                        $roundId = 3;
+                $special_area = CuserAgent::where('superior_agent_id',0)->where('id','>',3)->inRandomOrder()->first();
+                $insertData = [
+                    'phone_number' => $mobile,
+                    'special_area' => $special_area['id'],
+                    'special_area_name' => $special_area['agent_name'],
+                    'register_time' => time(),
+                    'head_shot' => 'https://zksj-new.oss-cn-beijing.aliyuncs.com/zk/image/ZKSJ_1770280030SR25.jpeg', //默认头像
+                    'username' => '掌中视界' . mt_rand(10000000, 99999999),
+                    'show_id' => mt_rand(10000000, 99999999),
+                ];
+
+                $user = $this->repo->createUsers($insertData);
+                $balance = CuserWallet::getBalance($user['id'], $special_area['id']);
+                if ($user && isset($balance)) {
+                    $response = $this->registerLogin($user);
+
+                    return ReponseData::reponseData($response);
+                }
+            }
+            if($userInfo['is_cancel'] == 1){
+                $userInfo->update(['is_cancel'=>0]);
+            }
+//                    if($userInfo['is_locked'] == 1){
+//                        $userInfo->update(['is_locked'=>0]);
+//                    }
+            if($userInfo['is_delete'] == 1){
+                return ReponseData::reponseFormat(2000,'账号被删除,请联系管理员!');
+            }
+            $nowTime                 = time();
+            $sessionKey              = base64_encode(md5($userInfo['id'].$userInfo['user_name'].$nowTime));
+            $key = 'token_'.$userInfo['id'];
+            Redis::set($key, $sessionKey);
+
+            $updateData = [
+                'last_online_time' => $nowTime,
+                'session_key' => $sessionKey,
+            ];
+            Cuser::where('id', $userInfo['id'])->update($updateData);
+            $response =  [
+                'id' => $userInfo['id'],
+                'special_area' => $userInfo['special_area'],
+                'session_key' => $sessionKey,
+            ];
+            $responseData = $response;
+            return ReponseData::reponseFormatList(200,'成功',$responseData);
+        } catch (\Exception $e) {
+            return response()->json(['code' => 400, 'msg' => $e->getMessage()]);
         }
     }
 }

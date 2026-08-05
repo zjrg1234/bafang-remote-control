@@ -29,6 +29,7 @@ Route::group(['middleware' => 'checkAesEntry'], function () { //所有接口走�
     Route::post('/one/key/login', [LoginController::class, 'oneKeyLogin']);
     Route::post('/app/version', [IndexController::class, 'appVersion']);
     Route::post('/user/app/version', [IndexController::class, 'appVersion']);
+    Route::post('/wechat/applet/login', [LoginController::class, 'wechatAppletLogin']); //微信小程序登陆
 
     Route::group(['middleware'=>'CheckToken'], function () { //登陆后的接口走token校验
         //代理商端
@@ -121,6 +122,7 @@ Route::group(['middleware' => 'checkAesEntry'], function () { //所有接口走�
 
             Route::post('/wechat/deposit', [IndexController::class, 'wechatDeposit']); //微信支付
             Route::post('/alipay/deposit', [IndexController::class, 'alipayDeposit']); //阿里
+            Route::post('/wechat/jsapi/deposit', [IndexController::class, 'wechatJsapiDeposit']); //微信小程序支付
             Route::post('/change/password', [LoginController::class, 'changePassword']);//用户前台-设置-修改密码
             Route::post('/change/phone', [LoginController::class, 'changePhone']);//用户前台-设置-修改手机号
             Route::post('/change/head/shot', [LoginController::class, 'changeHeadShot']);//用户前台-设置-修改头像

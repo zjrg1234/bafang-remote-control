@@ -468,11 +468,82 @@ class IndexService{
 
     }
 
+    public function wechatJsapiDeposit($request)
+    {
+//        $request = $this->setvice->decrypt($request['data']);
+        $data = [
+            'uid' => $request['uid'] ?? null,
+            'amount' => $request['amount'] ?? null,
+            'activity_id' => $request['activity_id'] ?? null,
+        ];
+
+        if(!$data['uid']){
+            return ReponseData::reponseFormat(2000,'用户id必传!');
+        }
+        $user = Cuser::where('id', $data['uid'])->first();
+        if(!$user){
+            return ReponseData::reponseFormat(2004,'未查询到该用户哦!');
+        }
+        $depositOrder = [
+            'uid' => $request['uid'],
+            'amount' => $request['amount'],
+            'user_name' => $user['username'],
+            'special_area'=> $user['special_area'],
+            'special_area_name'=> $user['special_area_name'],
+            'phone_number' => $user['phone_number'],
+            'time' => time(),
+            'type' => 0,
+            'pay_type' => 1,//1微信，支付宝，3银行卡，4momo
+            'order_no' => orderNo('WECHAT'),
+        ];
+        if($data['activity_id']){
+            $activity = DepositActivity::where('activity_id', $data['activity_id'])->first();
+            $num = DepositLog::where('activity_id', $data['activity_id'])->where('uid',$data['uid'])->count();
+
+            if($activity){
+                if($num < $activity['deposit_amount']){
+                    return ReponseData::reponseFormat(2000,'充值失败，活动参与已达上限请选择其他套餐哦');
+                }
+                $depositOrder['activity_id'] = $data['activity_id'];
+                $depositOrder['sendMoney'] = $activity['send_energy'];
+            }
+        }
+        DepositLog::create($depositOrder);
+
+        try{
+            $wechatpay = new WechatPayV3Service();
+            $depositOrder['subject'] = '电池购买';
+            $resp = $wechatpay->createJsapiOrder($depositOrder);
+            return ReponseData::reponseFormatList(200,'下单成功',$resp);
+        }catch (\Exception $e){
+            Log::error($e->getMessage());
+            return $e->getMessage();
+        }
+
+
+    }
+
     public function wechatNotify($request)
     {
         $inBody = $request->getContent();
 
         $bodyArray = json_decode($inBody, true);
+        $serial = $request->header('Wechatpay-Serial');
+        $signature = $request->header('Wechatpay-Signature');
+        $timestamp = $request->header('Wechatpay-Timestamp');
+        $nonce = $request->header('Wechatpay-Nonce');
+
+        try {
+            $wechatPayService = new WechatPayV3Service();
+            if (!$wechatPayService->verifyNotifySign($inBody, $signature, $timestamp, $nonce, $serial)) {
+                Log::warning("回调签名校验失败");
+                return response()->json(['code' => 'FAIL'], 400);
+            }
+        } catch (\Exception $e) {
+            Log::error("验签异常：".$e->getMessage());
+            return response()->json(['code' => 'FAIL'], 400);
+        }
+
         if (empty($bodyArray['resource'])) {
             return response()->json(['code' => 'FAIL', 'message' => '数据格式错误'], 400);
         }
