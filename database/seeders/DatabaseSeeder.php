@@ -39,13 +39,12 @@ class DatabaseSeeder extends Seeder
 //         ]);
 //        $this->run(UserService::class);
         $data = [
-            'username'=>'admin-zzsj-aaxijqe111',
-            'password'=>Hash::make('AUNL9T0KhpdwSjIf*qwas'),
+            'username'=>'admin-bfyk-aaxijqszzxe111',
+            'password'=>Hash::make('AUNL9T0KhpdwSjIf*q421231was'),
             'type'=>1,
         ];
-        dd($data);
 
-//        AdminUser::create($data);
+        AdminUser::create($data);
           //代理
 //            $data = [
 //                'uid' => 1,
