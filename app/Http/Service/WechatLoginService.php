@@ -21,7 +21,7 @@ class WechatLoginService
         }
 
         $appId = env('WECHAT_MINI_APPID');
-        $secret = env('WECHAT_MINI_APP_SECRET');
+        $secret = env('WECHAT_MINI_SECRET');
         $url = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid={$appId}&secret={$secret}";
         $resp = Http::get($url)->json();
 
