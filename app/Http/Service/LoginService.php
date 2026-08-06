@@ -200,7 +200,7 @@ class LoginService
             'special_area_name' => $special_area['agent_name'],
             'register_time' => time(),
             'login_ip' => $ip,
-            'head_shot' => 'https://zksj-new.oss-cn-beijing.aliyuncs.com/zk/image/ZKSJ_1770280030SR25.jpeg', //默认头像
+            'head_shot' => 'https://bfyk.oss-cn-hangzhou.aliyuncs.com/yk/image/ZKSJ_1785999958KSGK.jpeg', //默认头像
             'username' => '掌中视界'.mt_rand(10000000,99999999),
             'show_id' => mt_rand(10000000,99999999),
         ];
@@ -393,9 +393,9 @@ class LoginService
         foreach ($imageContent as  $value) {
             Log::info('request_image ' . $value->getPathName().'type:'.$value->getType().'size:'.$value->getSize());
             $fileContent = file_get_contents($value->getRealPath());
-            $fileName = 'ZKSJ_'.time() .readableRand(4) .'.' . 'jpeg';
+            $fileName = 'BFYK_'.time() .readableRand(4) .'.' . 'jpeg';
             $ossClient->putObject($config['bucket'], 'yk/image/'.$fileName,$fileContent);
-            $file = 'https://'.$config['bucket'].'.'.$config['endpoint'].'/zk/image/'.$fileName;
+            $file = 'https://'.$config['bucket'].'.'.$config['endpoint'].'/yk/image/'.$fileName;
             $resp['file'][] = $file;
         }
 
@@ -848,7 +848,7 @@ class LoginService
                             'special_area_name' => $special_area['agent_name'],
                             'register_time' => time(),
                             'login_ip' => $ip,
-                            'head_shot' => 'https://zksj-new.oss-cn-beijing.aliyuncs.com/zk/image/ZKSJ_1770280030SR25.jpeg', //默认头像
+                            'head_shot' => 'https://bfyk.oss-cn-hangzhou.aliyuncs.com/yk/image/ZKSJ_1785999958KSGK.jpeg', //默认头像
                             'username' => '掌中视界' . mt_rand(10000000, 99999999),
                             'show_id' => mt_rand(10000000, 99999999),
                         ];
@@ -967,7 +967,7 @@ class LoginService
                     'special_area' => $special_area['id'],
                     'special_area_name' => $special_area['agent_name'],
                     'register_time' => time(),
-                    'head_shot' => 'https://zksj-new.oss-cn-beijing.aliyuncs.com/zk/image/ZKSJ_1770280030SR25.jpeg', //默认头像
+                    'head_shot' => 'https://bfyk.oss-cn-hangzhou.aliyuncs.com/yk/image/ZKSJ_1785999958KSGK.jpeg', //默认头像
                     'username' => '掌中视界' . mt_rand(10000000, 99999999),
                     'show_id' => mt_rand(10000000, 99999999),
                 ];
