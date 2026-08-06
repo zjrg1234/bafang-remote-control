@@ -201,7 +201,7 @@ class LoginService
             'register_time' => time(),
             'login_ip' => $ip,
             'head_shot' => 'https://bfyk.oss-cn-hangzhou.aliyuncs.com/yk/image/ZKSJ_1785999958KSGK.jpeg', //默认头像
-            'username' => '掌中视界'.mt_rand(10000000,99999999),
+            'username' => '八方远控'.mt_rand(10000000,99999999),
             'show_id' => mt_rand(10000000,99999999),
         ];
 
@@ -849,7 +849,7 @@ class LoginService
                             'register_time' => time(),
                             'login_ip' => $ip,
                             'head_shot' => 'https://bfyk.oss-cn-hangzhou.aliyuncs.com/yk/image/ZKSJ_1785999958KSGK.jpeg', //默认头像
-                            'username' => '掌中视界' . mt_rand(10000000, 99999999),
+                            'username' => '八方远控' . mt_rand(10000000, 99999999),
                             'show_id' => mt_rand(10000000, 99999999),
                         ];
 
@@ -968,7 +968,7 @@ class LoginService
                     'special_area_name' => $special_area['agent_name'],
                     'register_time' => time(),
                     'head_shot' => 'https://bfyk.oss-cn-hangzhou.aliyuncs.com/yk/image/ZKSJ_1785999958KSGK.jpeg', //默认头像
-                    'username' => '掌中视界' . mt_rand(10000000, 99999999),
+                    'username' => '八方远控' . mt_rand(10000000, 99999999),
                     'show_id' => mt_rand(10000000, 99999999),
                 ];
 
