@@ -255,14 +255,14 @@ class IndexService{
 
         if(isset($type) && $type == 2){
             $specialList = CuserAgent::select('id','agent_name','head_shot','type','sorting')
-//                ->where('id','>',1)
+                ->where('is_delete','!=',1)
                 ->whereIn('type',[2,3])
                 ->where('superior_agent_id',0)
                 ->orderBy('sorting', 'asc')
                 ->orderBy('weekly_amount', 'desc')->get();
         }else{
             $specialList = CuserAgent::select('id','agent_name','head_shot','type','sorting')
-//                ->where('id','>',1)
+                ->where('is_delete','!=',1)
                 ->whereIn('type',[1,3])
                 ->where('superior_agent_id',0)
                 ->orderBy('sorting', 'asc')
