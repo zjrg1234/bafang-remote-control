@@ -970,13 +970,15 @@ class LoginService
                     'head_shot' => 'https://bfyk.oss-cn-hangzhou.aliyuncs.com/yk/image/ZKSJ_1785999958KSGK.jpeg', //默认头像
                     'username' => '八方远控' . mt_rand(10000000, 99999999),
                     'show_id' => mt_rand(10000000, 99999999),
+                    'openid' => $openid,
+                    'session_key' => $sessionKey,
+
                 ];
 
                 $user = $this->repo->createUsers($insertData);
                 $balance = CuserWallet::getBalance($user['id'], $special_area['id']);
                 if ($user && isset($balance)) {
                     $response = $this->registerLogin($user);
-
                     return ReponseData::reponseData($response);
                 }
             }
@@ -990,13 +992,14 @@ class LoginService
                 return ReponseData::reponseFormat(2000,'账号被删除,请联系管理员!');
             }
             $nowTime                 = time();
-            $sessionKey              = base64_encode(md5($userInfo['id'].$userInfo['user_name'].$nowTime));
+//            $sessionKey              = base64_encode(md5($userInfo['id'].$userInfo['user_name'].$nowTime));
             $key = 'token_'.$userInfo['id'];
             Redis::set($key, $sessionKey);
 
             $updateData = [
                 'last_online_time' => $nowTime,
                 'session_key' => $sessionKey,
+                'openid' => $openid,
             ];
             Cuser::where('id', $userInfo['id'])->update($updateData);
             $response =  [

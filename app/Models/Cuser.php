@@ -27,7 +27,8 @@ class Cuser extends Model
         'special_area_name',
         'is_delete',
         'show_id',
-        'is_screenshot'
+        'is_screenshot',
+        'openid'
     ];
     protected function serializeDate(\DateTimeInterface $date)
     {
