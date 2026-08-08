@@ -43,10 +43,11 @@ class WechatLoginService
         $accessToken = $this->getMiniAccessToken();
         $url = "https://api.weixin.qq.com/wxa/business/getuserphonenumber?access_token={$accessToken}";
 
-        $resp = Http::postJson($url, [
-            'code' => $phoneCode
+        $resp = Http::post($url, [
+            'json' => [
+                'code' => $phoneCode // 前端 wx.getPhoneNumber 返回的code
+            ]
         ])->json();
-
         if ($resp['errcode'] !== 0) {
             throw new \Exception("获取手机号失败[{$resp['errcode']}]：" . $resp['errmsg']);
         }
