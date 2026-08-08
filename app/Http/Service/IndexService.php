@@ -513,6 +513,7 @@ class IndexService{
         try{
             $wechatpay = new WechatPayV3Service();
             $depositOrder['subject'] = '电池购买';
+            $depositOrder['openid'] = $user['openid'];
             $resp = $wechatpay->createJsapiOrder($depositOrder);
             return ReponseData::reponseFormatList(200,'下单成功',$resp);
         }catch (\Exception $e){
@@ -532,6 +533,7 @@ class IndexService{
         $signature = $request->header('Wechatpay-Signature');
         $timestamp = $request->header('Wechatpay-Timestamp');
         $nonce = $request->header('Wechatpay-Nonce');
+        Log::info('微信支付回调 : ', $inBody);
 
         try {
             $wechatPayService = new WechatPayV3Service();
