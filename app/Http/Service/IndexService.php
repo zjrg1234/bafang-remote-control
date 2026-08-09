@@ -348,6 +348,12 @@ class IndexService{
             if($row['appeal_status'] == 1 || $row['appeal_status'] == 2){
                 $row['is_reservation'] = 0;
             }
+            if($rows['reservation_status'] == 1 || $rows['reservation_status'] == 2){
+                $vehicle = Vehicle::where('id',$row['vehicle_id'])->first();
+                $row['vehicle_state'] = $vehicle['vehicle_state'];
+            }else{
+                $row['vehicle_state'] = 1;
+            }
             $row['billing_rules'] = json_decode($row['billing_rules'],true);
             $row['app_transmitter_id'] = $row['transmitter_id'];
             unset($row['transmitter_id']);
