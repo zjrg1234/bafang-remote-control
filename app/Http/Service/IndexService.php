@@ -258,6 +258,7 @@ class IndexService{
                 ->where('is_delete','!=',1)
                 ->whereIn('type',[2,3])
                 ->where('superior_agent_id',0)
+                ->where('support_status',1)
                 ->orderBy('sorting', 'asc')
                 ->orderBy('weekly_amount', 'desc')->get();
         }else{
@@ -265,6 +266,7 @@ class IndexService{
                 ->where('is_delete','!=',1)
                 ->whereIn('type',[1,3])
                 ->where('superior_agent_id',0)
+                ->where('support_status',1)
                 ->orderBy('sorting', 'asc')
                 ->orderBy('weekly_amount', 'desc')
                 ->get();
