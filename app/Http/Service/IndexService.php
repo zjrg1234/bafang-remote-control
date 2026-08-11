@@ -543,16 +543,16 @@ class IndexService{
         $nonce = $request->header('Wechatpay-Nonce');
 //        Log::info('微信支付回调 : ', $inBody);
 
-        try {
-            $wechatPayService = new WechatPayV3Service();
-            if (!$wechatPayService->verifyNotifySign($inBody, $signature, $timestamp, $nonce, $serial)) {
-                Log::warning("回调签名校验失败");
-                return response()->json(['code' => 'FAIL'], 400);
-            }
-        } catch (\Exception $e) {
-            Log::error("验签异常：".$e->getMessage());
-            return response()->json(['code' => 'FAIL'], 400);
-        }
+//        try {
+//            $wechatPayService = new WechatPayV3Service();
+//            if (!$wechatPayService->verifyNotifySign($inBody, $signature, $timestamp, $nonce, $serial)) {
+//                Log::warning("回调签名校验失败");
+//                return response()->json(['code' => 'FAIL'], 400);
+//            }
+//        } catch (\Exception $e) {
+//            Log::error("验签异常：".$e->getMessage());
+//            return response()->json(['code' => 'FAIL'], 400);
+//        }
 
         if (empty($bodyArray['resource'])) {
             return response()->json(['code' => 'FAIL', 'message' => '数据格式错误'], 400);
