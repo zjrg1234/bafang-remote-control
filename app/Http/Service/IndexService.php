@@ -541,7 +541,7 @@ class IndexService{
         $signature = $request->header('Wechatpay-Signature');
         $timestamp = $request->header('Wechatpay-Timestamp');
         $nonce = $request->header('Wechatpay-Nonce');
-        Log::info('微信支付回调 : ', $inBody);
+//        Log::info('微信支付回调 : ', $inBody);
 
         try {
             $wechatPayService = new WechatPayV3Service();
