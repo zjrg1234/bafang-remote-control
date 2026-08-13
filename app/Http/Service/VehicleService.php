@@ -559,7 +559,7 @@ class VehicleService
                 ],
             ];
         }
-        if($data['vehicle_type'] >=30 && $data['vehicle_type'] <=39 ){
+        if($data['vehicle_type'] == 21){
             $channelConfig = [
                 'ch1'=>[
                     'open_value'=>[
