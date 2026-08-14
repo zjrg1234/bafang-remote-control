@@ -563,47 +563,47 @@ class VehicleService
             $channelConfig = [
                 'ch1'=>[
                     'open_value'=>[
-                        'mini_value'=>400,
-                        'max_value'=>1600,
+                        'mini_value'=>300,
+                        'max_value'=>1700,
                         'current_value'=>1200,
                     ],
                     'close_value'=>[
-                        'mini_value'=>400,
-                        'max_value'=>1600,
+                        'mini_value'=>300,
+                        'max_value'=>1700,
                         'current_value'=>700,
                     ],
                     'center_value'=>[
-                        'mini_value'=>400,
-                        'max_value'=>1600,
+                        'mini_value'=>300,
+                        'max_value'=>1700,
                         'current_value'=>1000,
                     ],
                 ],
                 'ch2'=>[
                     'open_value'=>[
-                        'mini_value'=>400,
-                        'max_value'=>1600,
+                        'mini_value'=>300,
+                        'max_value'=>1700,
                         'current_value'=>1200,
                     ],
                     'close_value'=>[
-                        'mini_value'=>400,
-                        'max_value'=>1600,
+                        'mini_value'=>300,
+                        'max_value'=>1700,
                         'current_value'=>700,
                     ],
                     'center_value'=>[
-                        'mini_value'=>400,
-                        'max_value'=>1600,
+                        'mini_value'=>300,
+                        'max_value'=>1700,
                         'current_value'=>1000,
                     ],
                 ],
                 'ch3'=>[
                     'open_value'=>[
-                        'mini_value'=>400,
-                        'max_value'=>1600,
+                        'mini_value'=>300,
+                        'max_value'=>1700,
                         'current_value'=>1200,
                     ],
                     'close_value'=>[
-                        'mini_value'=>400,
-                        'max_value'=>1600,
+                        'mini_value'=>300,
+                        'max_value'=>1700,
                         'current_value'=>700,
                     ],
                     'center_value'=>[
@@ -614,13 +614,13 @@ class VehicleService
                 ],
                 'ch4'=>[
                     'open_value'=>[
-                        'mini_value'=>400,
-                        'max_value'=>1600,
+                        'mini_value'=>300,
+                        'max_value'=>1700,
                         'current_value'=>1200,
                     ],
                     'close_value'=>[
-                        'mini_value'=>400,
-                        'max_value'=>1600,
+                        'mini_value'=>300,
+                        'max_value'=>1700,
                         'current_value'=>700,
                     ],
                     'center_value'=>[
@@ -631,13 +631,13 @@ class VehicleService
                 ],
                 'ch5'=>[
                     'open_value'=>[
-                        'mini_value'=>400,
-                        'max_value'=>1600,
+                        'mini_value'=>300,
+                        'max_value'=>1700,
                         'current_value'=>1200,
                     ],
                     'close_value'=>[
-                        'mini_value'=>400,
-                        'max_value'=>1600,
+                        'mini_value'=>300,
+                        'max_value'=>1700,
                         'current_value'=>700,
                     ],
                     'center_value'=>[
@@ -648,13 +648,13 @@ class VehicleService
                 ],
                 'ch6'=>[
                     'open_value'=>[
-                        'mini_value'=>400,
-                        'max_value'=>1600,
+                        'mini_value'=>300,
+                        'max_value'=>1700,
                         'current_value'=>1200,
                     ],
                     'close_value'=>[
-                        'mini_value'=>400,
-                        'max_value'=>1600,
+                        'mini_value'=>300,
+                        'max_value'=>1700,
                         'current_value'=>700,
                     ],
                     'center_value'=>[

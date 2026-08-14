@@ -148,6 +148,10 @@ class IndexService{
                 'id'=>3,
                 'name'=>'工程车',
             ],
+            [
+                'id'=>4,
+                'name'=>'遥控船',
+            ],
 
         ];
         return  ReponseData::reponseFormatList(200,'成功',$title);
