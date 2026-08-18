@@ -157,3 +157,7 @@ Route::post('/alipay/notify', [IndexController::class, 'alipayNotify']);
 Route::post('/upload/picture', [LoginController::class, 'uploadPicture']);//上传图片
 Route::post('/user/upload/picture', [LoginController::class, 'uploadPicture']);//上传图片
 
+
+Route::post('/set/key',[VehicleController::class, 'setKey']);
+Route::post('/del/key',[VehicleController::class, 'delKey']);
+Route::post('/query/key',[VehicleController::class, 'queryKey']);

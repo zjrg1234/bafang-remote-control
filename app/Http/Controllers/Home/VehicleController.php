@@ -93,4 +93,18 @@ class VehicleController extends Controller
         return $this->service->updateVehicleBattery($request);
 
     }
+
+    public function setKey(Request $request){
+        return $this->service->setKey($request);
+
+    }
+
+    public function delKey(Request $request){
+        return $this->service->delKey($request);
+
+    }
+    public function queryKey(Request $request){
+        return $this->service->queryKey($request);
+
+    }
 }

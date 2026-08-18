@@ -1499,4 +1499,57 @@ class VehicleService
 
         return ReponseData::reponseFormat(200,'更新成功');
     }
+
+
+    public function setKey($request)
+    {
+        $data = [
+            'order_no'  => $request['order_no'] ?? null,
+            'type'     => $request['type'] ?? null,
+        ];
+        if(!$data['order_no']){
+            return ReponseData::reponseFormat(2000,'订单号必传');
+        }
+
+        if(!$data['type']){
+            return ReponseData::reponseFormat(2000,'状态必传');
+        }
+        $key = 'vehicle_query_'.$data['order_no'];
+        Redis::set($key,$data['type']);
+
+        return ReponseData::reponseFormat(200,'设置成功');
+    }
+
+    public function queryKey($request)
+    {
+        $data = [
+            'order_no'  => $request['order_no'] ?? null,
+        ];
+        if(!$data['order_no']){
+            return ReponseData::reponseFormat(2000,'订单号必传');
+        }
+
+        $key = 'vehicle_query_'.$data['order_no'];
+        $value = Redis::get($key);
+        $resp = [
+            'type' => $value,
+        ];
+
+        return ReponseData::reponseFormatList(200,'成功',$resp);
+    }
+
+    public function delKey($request)
+    {
+        $data = [
+            'order_no'  => $request['order_no'] ?? null,
+        ];
+        if(!$data['order_no']){
+            return ReponseData::reponseFormat(2000,'订单号必传');
+        }
+
+        $key = 'vehicle_query_'.$data['order_no'];
+        Redis::del($key);
+        return ReponseData::reponseFormat(200,'删除成功');
+
+    }
 }
