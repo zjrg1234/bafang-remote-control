@@ -108,6 +108,8 @@ Route::group(['middleware' => 'checkAesEntry'], function () { //所有接口走�
 //            Route::post('/start/driving',[UserController::class,'startDriving']); //开始驾驶/**/
             Route::post('/venue/detail', [IndexController::class, 'venueDetail']); //场地详情
             Route::post('/driving/protocol',[IndexController::class, 'drivingProtocol']);
+            Route::post('/check/vehicle/status', [IndexController::class, 'checkVehicleStatus']);
+
 //            Route::post('/driving/protocol',[IndexController::class, 'drivingProtocol']);
             Route::post('/mine', [IndexController::class, 'mine']); //我的
             Route::post('/change/special', [IndexController::class, 'changeSpecial']);//变更专区

@@ -1808,4 +1808,38 @@ class IndexService{
         return ReponseData::reponseFormat(200,'点击驾驶锁车成功');
 
     }
+
+
+    public function checkVehicleStatus($request)
+    {
+        $data = [
+            'uid' => $request['uid'] ?? null,
+            'vehicle_id' => $request['vehicle_id'] ?? null,
+        ];
+
+        if(!$data['uid']){
+            return ReponseData::reponseFormat(2000,'用户id必传');
+        }
+
+        if(!$data['vehicle_id']){
+            return ReponseData::reponseFormat(2000,'车辆id必传');
+        }
+
+        $user = Cuser::where('id',$data['uid'])->first();
+        if(!$user){
+            return  ReponseData::reponseFormat(2000,'未找到该用户');
+        }
+
+        $vehicle = Vehicle::where('id',$request['vehicle_id'])->first();
+
+        if(!$vehicle){
+            return  ReponseData::reponseFormat(2000,'未找到该车辆');
+        }
+
+        if($vehicle['status'] != 1){
+            return ReponseData::reponseFormat(2000,'车辆已下架');
+        }
+
+        return ReponseData::reponseFormat(200,'获取成功');
+    }
 }

@@ -183,4 +183,10 @@ class IndexController extends Controller
     {
         return $this->service->wechatJsapiDeposit($request);
     }
+
+    public function checkVehicleStatus(Request $request)
+    {
+        return $this->service->checkVehicleStatus($request);
+
+    }
 }
