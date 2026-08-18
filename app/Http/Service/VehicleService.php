@@ -1511,7 +1511,7 @@ class VehicleService
             return ReponseData::reponseFormat(2000,'订单号必传');
         }
 
-        if(!$data['type']){
+        if($data['type'] === null){
             return ReponseData::reponseFormat(2000,'状态必传');
         }
         $key = 'vehicle_query_'.$data['order_no'];
