@@ -230,7 +230,7 @@ class AgentService
             if($value['level'] == 2){
                 $superior_agent_name = CuserAgent::where('id', $value['superior_agent_id'])->value('agent_name');
             }else{
-                $superior_agent_name = '掌控视界';
+                $superior_agent_name = '八方远控';
             }
             $value['superior_agent_name'] = $superior_agent_name;
 
