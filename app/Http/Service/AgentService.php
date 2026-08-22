@@ -255,6 +255,7 @@ class AgentService
             'register_time'=>time(),
             'show_id' => mt_rand(10000000,99999999),
             'type'=>$request['type'] ?? 3,
+            'is_screenshot' => 1,
         ];
         if(!$data['level']){
             return ReponseData::reponseFormat(2000,'代理商等级必填');
