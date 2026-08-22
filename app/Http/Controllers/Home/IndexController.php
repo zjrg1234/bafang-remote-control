@@ -184,6 +184,21 @@ class IndexController extends Controller
         return $this->service->wechatJsapiDeposit($request);
     }
 
+    public function transmitterBind(Request $request)
+    {
+        return $this->service->transmitterBind($request);
+    }
+
+    public function transmitterUnBind(Request $request)
+    {
+        return $this->service->transmitterUnBind($request);
+    }
+
+    public function transmitterQueryBind(Request $request)
+    {
+        return $this->service->queryBind($request);
+    }
+
     public function checkVehicleStatus(Request $request)
     {
         return $this->service->checkVehicleStatus($request);

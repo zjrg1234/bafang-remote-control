@@ -1842,4 +1842,104 @@ class IndexService{
 
         return ReponseData::reponseFormat(200,'获取成功');
     }
+
+
+    public function transmitterBind($request)
+    {
+        $data = [
+            'transmitter_id' => $request['transmitter_id'] ?? null,
+            'receiver_id' => $request['receiver_id'] ?? null,
+            'sign'  => $request['sign'] ?? null,
+        ];
+        $sign = $request->all();
+
+        $get = $this->Sign($sign);
+        if(!$data['receiver_id']){
+            return ReponseData::reponseFormat(2000,'接收机id必传');
+        }
+
+        if(!$data['transmitter_id']){
+            return ReponseData::reponseFormat(2000,'发射机id必传');
+        }
+
+        if(!$data['sign']){
+            return ReponseData::reponseFormat(2000,'签名必传');
+
+        }
+
+        Redis::set($data['transmitter_id'],$data['receiver_id']);
+
+        return  ReponseData::reponseFormat(200,'绑定成功');
+    }
+
+    public function transmitterUnBind($request)
+    {
+        $data = [
+            'transmitter_id' => $request['transmitter_id'] ?? null,
+            'sign'  => $request['sign'] ?? null,
+        ];
+        $sign = $request->all();
+        $get = $this->Sign($sign);
+
+        if(!$data['transmitter_id']){
+            return ReponseData::reponseFormat(2000,'发射机id必传');
+        }
+
+        if(!$data['sign']){
+            return ReponseData::reponseFormat(2000,'签名必传');
+
+        }
+
+        Redis::del($data['transmitter_id']);
+        return  ReponseData::reponseFormat(200,'解绑成功');
+
+    }
+    public function queryBind($request)
+    {
+        $data = [
+            'transmitter_id' => $request['transmitter_id'] ?? null,
+            'sign'  => $request['sign'] ?? null,
+        ];
+
+        $sign = $request->all();
+        $get = $this->Sign($sign);
+        if(!$data['transmitter_id']){
+            return ReponseData::reponseFormat(2000,'发射机id必传');
+        }
+
+        if(!$data['sign']){
+            return ReponseData::reponseFormat(2000,'签名必传');
+
+        }
+        $value = Redis::get($data['transmitter_id']);
+        $resp = [
+            'transmitter_id' => $data['transmitter_id'],
+            'type' => 0,
+        ];
+        if($value){
+            $resp = [
+                'transmitter_id' => $data['transmitter_id'],
+                'type' => 1,
+            ];
+        }
+
+        return ReponseData::reponseFormatList(200,'成功',$resp);
+    }
+
+    public function Sign(array $params): string
+    {
+        ksort($params);
+        $signKey = env('SIGN_KEY','');
+        $querys = [];
+        foreach ($params as $key => $val) {
+            if ($key == 'sign') {
+                continue;
+            }
+            $querys[] = "{$key}={$val}";
+        }
+
+        $toSign = implode('&', $querys) . $signKey;
+        Log::info('Sign:' . $toSign);
+        return hash('sha256', $toSign);
+    }
 }

@@ -163,3 +163,7 @@ Route::post('/user/upload/picture', [LoginController::class, 'uploadPicture']);/
 Route::post('/set/key',[VehicleController::class, 'setKey']);
 Route::post('/del/key',[VehicleController::class, 'delKey']);
 Route::post('/query/key',[VehicleController::class, 'queryKey']);
+
+Route::post('/transmitter/bind',[IndexController::class,'transmitterBind']);
+Route::post('/transmitter/un/bind',[IndexController::class,'transmitterUnBind']);
+Route::post('/transmitter/query/bind',[IndexController::class,'transmitterQueryBind']);

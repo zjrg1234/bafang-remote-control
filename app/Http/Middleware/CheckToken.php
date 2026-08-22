@@ -40,9 +40,16 @@ class CheckToken
         $platform = $request->header('platform') ?? '';
         $request_version = $request->header('versionCode') ?? '';
 
+        $arr = explode('.', $request_version);
+
 //        if($platform && $platform == 'ZZSJ_iOS'){
+//            $requestArrayVersion = $arr[0].$arr[1].$arr[2];
+//
 //            $app_version = AppVersion::where(['type'=>1,'status'=>1])->first();
-//            if($app_version['forced_updating'] == 1 && $request_version != $app_version['version_mark']){
+//            $appArray = explode('.', $app_version['version_mark']);
+//            $appArrayVersion = $appArray[0].$appArray[1].$appArray[2];
+//
+//            if($app_version['forced_updating'] == 1 && $requestArrayVersion < $appArrayVersion){
 //                return ReponseData::reponseFormat(2000,'请更新最新版app哦!');
 //            }
 //            if($request->server('REQUEST_URI') == '/api/user/start/driving' || $request->server('REQUEST_URI') == '/api/user/reservation'){
@@ -51,7 +58,12 @@ class CheckToken
 //        }
 //        if ($platform && $platform == 'ZZSJ_Android'){
 //            $app_version = AppVersion::where(['type'=>2,'status'=>1])->first();
-//            if($app_version['forced_updating'] == 1 && $request_version != $app_version['version_mark']){
+//            $requestArrayVersion = $arr[0].$arr[1].$arr[2];
+//            $appArray = explode('.', $app_version['version_mark']);
+//            $appArrayVersion = $appArray[0].$appArray[1].$appArray[2];
+//
+//
+//            if($app_version['forced_updating'] == 1 && $requestArrayVersion <= $appArrayVersion){
 //                return ReponseData::reponseFormat(2000,'请更新最新版app哦!');
 //            }
 //            if($request->server('REQUEST_URI') == '/api/user/start/driving' || $request->server('REQUEST_URI') == '/api/user/reservation'){
