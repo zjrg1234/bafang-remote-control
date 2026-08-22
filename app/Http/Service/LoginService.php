@@ -204,6 +204,7 @@ class LoginService
             'head_shot' => 'https://bfyk.oss-cn-hangzhou.aliyuncs.com/yk/image/ZKSJ_1785999958KSGK.jpeg', //默认头像
             'username' => '八方远控'.mt_rand(10000000,99999999),
             'show_id' => mt_rand(10000000,99999999),
+            'is_screenshot' => 1,
         ];
 
         $user = $this->repo->createUsers($insertData);
@@ -853,6 +854,7 @@ class LoginService
                             'head_shot' => 'https://bfyk.oss-cn-hangzhou.aliyuncs.com/yk/image/ZKSJ_1785999958KSGK.jpeg', //默认头像
                             'username' => '八方远控' . mt_rand(10000000, 99999999),
                             'show_id' => mt_rand(10000000, 99999999),
+                            'is_screenshot' => 1,
                         ];
 
                         $user = $this->repo->createUsers($insertData);
