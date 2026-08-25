@@ -787,7 +787,7 @@ class IndexService{
     public function feedBack($request)
     {
 //        $request = $this->decrypt($request['data']);
-        $image = $request['image'] ?? null;
+        $image = $request['image'] ?? '';
         $content = $request['content'] ?? null;
         $uid = $request['uid'] ?? null;
         $agent_id = $request['agent_id'] ?? null;
