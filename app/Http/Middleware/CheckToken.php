@@ -42,34 +42,34 @@ class CheckToken
 
         $arr = explode('.', $request_version);
 
-//        if($platform && $platform == 'ZZSJ_iOS'){
-//            $requestArrayVersion = $arr[0].$arr[1].$arr[2];
-//
-//            $app_version = AppVersion::where(['type'=>1,'status'=>1])->first();
-//            $appArray = explode('.', $app_version['version_mark']);
-//            $appArrayVersion = $appArray[0].$appArray[1].$appArray[2];
-//
-//            if($app_version['forced_updating'] == 1 && $requestArrayVersion < $appArrayVersion){
-//                return ReponseData::reponseFormat(2000,'请更新最新版app哦!');
-//            }
+        if($platform && $platform == 'ZZSJ_iOS'){
+            $requestArrayVersion = $arr[0].$arr[1].$arr[2];
+
+            $app_version = AppVersion::where(['type'=>1,'status'=>1])->first();
+            $appArray = explode('.', $app_version['version_mark']);
+            $appArrayVersion = $appArray[0].$appArray[1].$appArray[2];
+
+            if($app_version['forced_updating'] == 1 && $requestArrayVersion < $appArrayVersion){
+                return ReponseData::reponseFormat(2000,'请更新最新版app哦!');
+            }
+            if($request->server('REQUEST_URI') == '/api/user/start/driving' || $request->server('REQUEST_URI') == '/api/user/reservation'){
+                return ReponseData::reponseFormat(2000,'请更新最新版app哦!');
+            }
+        }
+        if ($platform && $platform == 'ZZSJ_Android'){
+            $app_version = AppVersion::where(['type'=>2,'status'=>1])->first();
+            $requestArrayVersion = $arr[0].$arr[1].$arr[2];
+            $appArray = explode('.', $app_version['version_mark']);
+            $appArrayVersion = $appArray[0].$appArray[1].$appArray[2];
+
+
+            if($app_version['forced_updating'] == 1 && $requestArrayVersion <= $appArrayVersion){
+                return ReponseData::reponseFormat(2000,'请更新最新版app哦!');
+            }
 //            if($request->server('REQUEST_URI') == '/api/user/start/driving' || $request->server('REQUEST_URI') == '/api/user/reservation'){
 //                return ReponseData::reponseFormat(2000,'请更新最新版app哦!');
 //            }
-//        }
-//        if ($platform && $platform == 'ZZSJ_Android'){
-//            $app_version = AppVersion::where(['type'=>2,'status'=>1])->first();
-//            $requestArrayVersion = $arr[0].$arr[1].$arr[2];
-//            $appArray = explode('.', $app_version['version_mark']);
-//            $appArrayVersion = $appArray[0].$appArray[1].$appArray[2];
-//
-//
-//            if($app_version['forced_updating'] == 1 && $requestArrayVersion <= $appArrayVersion){
-//                return ReponseData::reponseFormat(2000,'请更新最新版app哦!');
-//            }
-//            if($request->server('REQUEST_URI') == '/api/user/start/driving' || $request->server('REQUEST_URI') == '/api/user/reservation'){
-//                return ReponseData::reponseFormat(2000,'请更新最新版app哦!');
-//            }
-//        }
+        }
 
 
         if (!isset($session_key)) {
