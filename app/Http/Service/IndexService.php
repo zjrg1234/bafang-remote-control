@@ -939,8 +939,14 @@ class IndexService{
 
         $key = 'complain_'.$data['order_no'].'_'.$data['uid'];
         $ret = Redis::set($key, '1','ex','5','nx');
+
         if(!$ret){
             return ReponseData::reponseFormat(2000,'请勿重复点击哦');
+        }
+        $delKey = 'complain_'.$data['uid'];
+        $get = Redis::get($delKey);
+        if($get){
+            return ReponseData::reponseFormat(2000,'申请太频繁,暂不可申请');
         }
         if(!$data['uid']){
             return ReponseData::reponseFormat(2000,'用户id必传');
@@ -966,6 +972,9 @@ class IndexService{
         if($order['appeal_status'] == 2){
             return ReponseData::reponseFormat(2000,'已经申诉过了哦');
         }
+
+        $time = time() - 120;
+        $count = ComplainRecord::where('uid',$data['uid'])->where('time','>=',$time)->count();
         $data['user_name'] = $order['user_name'];
         $data['phone'] = $order['phone'];
         $data['venue_id'] = $order['venue_id'];
@@ -982,6 +991,11 @@ class IndexService{
         ComplainRecord::create($data);
         $order->appeal_status = 1;
         $order->save();
+        $count = $count + 1;
+        if($count >= 5){
+            $key = 'complain_'.$data['uid'];
+            Redis::setex($key,300,1);
+        }
 
         return ReponseData::reponseFormat(200,'成功');
     }
