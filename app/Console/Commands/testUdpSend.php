@@ -29,6 +29,8 @@ class testUdpSend extends Command
 //        $data = Redis::get('42126194_receiver');
 //        dd($data);
 //        //42126195 发射id
+        $a = '666666';
+        dd(md5($a));
         $socket = socket_create(AF_INET, SOCK_DGRAM, SOL_UDP);
         if ($socket === false) {
             echo "创建套接字失败：" . socket_strerror(socket_last_error()) . PHP_EOL;

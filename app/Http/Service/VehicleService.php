@@ -7,6 +7,7 @@ use App\Models\AgentVenue;
 use App\Models\AgentWallet;
 use App\Models\AgentWalletLog;
 use App\Models\AlarmVehcle;
+use App\Models\ComplainRecord;
 use App\Models\Cuser;
 use App\Models\CuserAgent;
 use App\Models\CuserWallet;
@@ -1249,6 +1250,11 @@ class VehicleService
             'order_no' => $request['order_no'] ?? null,
             'uid' => $request['uid'] ?? null,
         ];
+        $delKey = 'alarm_vehicle_'.$data['uid'];
+        $get = Redis::get($delKey);
+        if($get){
+            return ReponseData::reponseFormat(2000,'申请太频繁,暂不可申请');
+        }
 
         if(!$data['id']){
             return ReponseData::reponseFormat(2000,'id必传');
@@ -1257,6 +1263,7 @@ class VehicleService
         if(!$data['text']){
             return ReponseData::reponseFormat(2000,'内容必传');
         }
+
 
         $vehicle = Vehicle::where('id', $data['id'])->first();
         if(!$vehicle){
@@ -1479,6 +1486,12 @@ class VehicleService
         Redis::del('vehicle'.$vehicle['id']); //上报警告结束解锁车
 
         AlarmVehcle::create($insertData);
+        $count = AlarmVehcle::where('uid',$data['uid'])->where('created_at', '>=', now()->subMinutes(2))->count();
+        $count = $count + 1;
+        if($count >= 4){
+            $key = 'alarm_vehicle_'.$data['uid'];
+            Redis::setex($key,1800,1);
+        }
         return  ReponseData::reponseFormat(200,'车辆报修提交成功!');
     }
     public function updateVehicleBattery($request)
