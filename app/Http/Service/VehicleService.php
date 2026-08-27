@@ -1490,7 +1490,7 @@ class VehicleService
         $count = $count + 1;
         if($count >= 4){
             $key = 'alarm_vehicle_'.$data['uid'];
-            Redis::setex($key,600,1);
+            Redis::setex($key,300,1);
         }
         return  ReponseData::reponseFormat(200,'车辆报修提交成功!');
     }
