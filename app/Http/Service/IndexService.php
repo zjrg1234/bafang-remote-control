@@ -503,26 +503,7 @@ class IndexService{
 
         }
         $openid = $user['openid'];
-        if($user['oepnid'] == ''){
-            $appId     = env('WECHAT_MINI_APPID');
-            $appSecret = env('WECHAT_MINI_SECRET');
-            $jsCode = $data['login_code'];
-            $url = "https://api.weixin.qq.com/sns/jscode2session?appid={$appId}&secret={$appSecret}&js_code={$jsCode}&grant_type=authorization_code";
-            $resp = Http::get($url)->json();
 
-            if (isset($resp['errcode']) && $resp['errcode'] != 0) {
-                return response()->json([
-                    'code' => 2000,
-                    'msg'  => '微信登录失败：' . $resp['errmsg']
-                ]);
-            }
-
-            $openid = $resp['openid'];
-            $sessionKey = $resp['session_key'];
-            $user['openid'] = $openid;
-            $user['session_key'] = $sessionKey;
-            $user->save();
-        }
         $depositOrder = [
             'uid' => $request['uid'],
             'amount' => $request['amount'],

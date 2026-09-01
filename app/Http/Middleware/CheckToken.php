@@ -42,7 +42,7 @@ class CheckToken
 
         $arr = explode('.', $request_version);
 
-        if($platform && $platform == 'ZZSJ_iOS'){
+        if($platform && $platform == 'BFYK_i0S'){
             $requestArrayVersion = $arr[0].$arr[1].$arr[2];
 
             $app_version = AppVersion::where(['type'=>1,'status'=>1])->first();
