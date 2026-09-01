@@ -94,7 +94,6 @@ class WechatPayV3Service{
             // === 生成给 iOS/Android 的二次签名数据 ===
             $timeStamp = (string)time();
             $nonceStr  = Formatter::nonce();
-
             // APP支付的签名要素（必须严格按此顺序和换行符）
             $message = config('wechat.appid') . "\n" .
                 $timeStamp . "\n" .
@@ -159,17 +158,18 @@ class WechatPayV3Service{
         $timeStamp = (string)time();
         $nonceStr  = Formatter::nonce();
         $package   = "prepay_id={$prepayId}";
+        $privateKeyStr = $this->instance['privateKey']->toString();
 
         // 签名原文顺序：appId\n + timeStamp\n + nonceStr\n + package\n
         $message = implode("\n", [
-                config('wechat.appid'),
+                config('wechat.mini_appid'),
                 $timeStamp,
                 $nonceStr,
                 $package,
             ]) . "\n";
 
 //        $sign = Rsa::sign($message, $this->merchantPrivateKey);
-        $sign = Rsa::sign($message, $this->instance['privateKey']);
+        $sign = Rsa::sign($message, $privateKeyStr);
 
         return [
             'timeStamp' => $timeStamp,
