@@ -866,11 +866,14 @@ class AgentService
         }
         $balance = AgentWallet::where(['agent_id' => $id])->first();
         $afterBalance = $balance['balance'] + $amount;
+        $type = 1;
 
         if($amount < 0){
             if($balance['balance'] < abs($amount)){
                 return ReponseData::reponseFormat(2000,'余额不能减为负数');
             }
+            $type = 2;
+
         }
         try {
             $updateAmount = $amount;
@@ -880,7 +883,7 @@ class AgentService
             }
             AgentWalletLog::create([
                 'agent_id' => $id,
-                'type' => 2,
+                'type' => $type,
                 'type_name' => '后台修改余额',
                 'amount' => abs($amount),
                 'balance' => $afterBalance,
