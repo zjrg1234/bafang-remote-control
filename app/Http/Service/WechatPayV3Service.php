@@ -158,7 +158,7 @@ class WechatPayV3Service{
         $timeStamp = (string)time();
         $nonceStr  = Formatter::nonce();
         $package   = "prepay_id={$prepayId}";
-        $privateKey = PemUtil::loadPrivateKey($this->merchantPrivateKey);
+//        $privateKey = PemUtil::loadPrivateKey($this->merchantPrivateKey);
 
         // 签名原文顺序：appId\n + timeStamp\n + nonceStr\n + package\n
         $message = implode("\n", [
@@ -168,8 +168,8 @@ class WechatPayV3Service{
                 $package,
             ]) . "\n";
 
-//        $sign = Rsa::sign($message, $this->merchantPrivateKey);
-        $sign = Rsa::sign($message, $privateKey);
+        $sign = Rsa::sign($message, $this->merchantPrivateKey);
+//        $sign = Rsa::sign($message, $privateKey);
 
         return [
             'timeStamp' => $timeStamp,
