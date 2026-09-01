@@ -441,6 +441,7 @@ class IndexService{
         if(!$user){
             return ReponseData::reponseFormat(2004,'未查询到该用户哦!');
         }
+
         $depositOrder = [
             'uid' => $request['uid'],
             'amount' => $request['amount'],
@@ -487,6 +488,7 @@ class IndexService{
             'uid' => $request['uid'] ?? null,
             'amount' => $request['amount'] ?? null,
             'activity_id' => $request['activity_id'] ?? null,
+            'login_code' => $request['login_code'] ?? null,
         ];
 
         if(!$data['uid']){
@@ -495,6 +497,31 @@ class IndexService{
         $user = Cuser::where('id', $data['uid'])->first();
         if(!$user){
             return ReponseData::reponseFormat(2004,'未查询到该用户哦!');
+        }
+        if(!$data['login_code']){
+            return ReponseData::reponseFormat(2000,'code必传!');
+
+        }
+        $openid = $user['openid'];
+        if($user['oepnid'] == ''){
+            $appId     = env('WECHAT_MINI_APPID');
+            $appSecret = env('WECHAT_MINI_SECRET');
+            $jsCode = $data['login_code'];
+            $url = "https://api.weixin.qq.com/sns/jscode2session?appid={$appId}&secret={$appSecret}&js_code={$jsCode}&grant_type=authorization_code";
+            $resp = Http::get($url)->json();
+
+            if (isset($resp['errcode']) && $resp['errcode'] != 0) {
+                return response()->json([
+                    'code' => 2000,
+                    'msg'  => '微信登录失败：' . $resp['errmsg']
+                ]);
+            }
+
+            $openid = $resp['openid'];
+            $sessionKey = $resp['session_key'];
+            $user['openid'] = $openid;
+            $user['session_key'] = $sessionKey;
+            $user->save();
         }
         $depositOrder = [
             'uid' => $request['uid'],
@@ -525,7 +552,7 @@ class IndexService{
         try{
             $wechatpay = new WechatPayV3Service();
             $depositOrder['subject'] = '电池购买';
-            $depositOrder['openid'] = $user['openid'];
+            $depositOrder['openid'] = $openid;
             $resp = $wechatpay->createJsapiOrder($depositOrder);
             return ReponseData::reponseFormatList(200,'下单成功',$resp);
         }catch (\Exception $e){
@@ -902,6 +929,29 @@ class IndexService{
             return ReponseData::reponseFormat(2004,'未查询到该用户!');
         }
         $user->username = $name;
+        $user->save();
+
+        return ReponseData::reponseFormat(200,'成功');
+    }
+
+    public function agentChangeName($request)
+    {
+//        $request = $this->decrypt($request['data']);
+
+        $agent_id = $request['agent_id'] ?? null;
+        $name = $request['name'] ?? null;
+
+        if(!$agent_id){
+            return ReponseData::reponseFormat(2000,'用户id必传!');
+        }
+        if(!$name){
+            return ReponseData::reponseFormat(2000,'昵称必传!');
+        }
+        $user = CuserAgent::select('id','agent_name')->where('id', $agent_id)->first();
+        if(!$user){
+            return ReponseData::reponseFormat(2004,'未查询到该用户!');
+        }
+        $user->agent_name = $name;
         $user->save();
 
         return ReponseData::reponseFormat(200,'成功');
