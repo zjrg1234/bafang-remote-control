@@ -36,6 +36,8 @@ class LoginService
             'captcha'  => $request['noteVerify'] ?? null,
             'type'     => $request['type'] ?? null,
         ];
+        $jsCode = $request['login_code'] ?? null;
+
         if(isset($request['password'])){
             $data['password'] = md5($request['password']);
         }else{
@@ -84,6 +86,24 @@ class LoginService
                     return ReponseData::reponseFormat(2003,'请输入验证码！');
                 }
             }
+            $openid = '';
+            if($jsCode){
+
+                $appId     = env('WECHAT_MINI_APPID');
+                $appSecret = env('WECHAT_MINI_SECRET');
+
+                $url = "https://api.weixin.qq.com/sns/jscode2session?appid={$appId}&secret={$appSecret}&js_code={$jsCode}&grant_type=authorization_code";
+                $resp = Http::get($url)->json();
+
+                if (isset($resp['errcode']) && $resp['errcode'] != 0) {
+                    return response()->json([
+                        'code' => 2000,
+                        'msg'  => '微信登录失败：' . $resp['errmsg']
+                    ]);
+                }
+
+                $openid = $resp['openid'];
+            }
 
             $nowTime                 = time();
             $sessionKey              = base64_encode(md5($userInfo['id'].$userInfo['user_name'].$nowTime));
@@ -93,6 +113,7 @@ class LoginService
                 'last_online_time' => $nowTime,
                 'login_ip' => $ip,
                 'session_key' => $sessionKey,
+                'openid' => $openid,
             ];
             Cuser::where('id', $userInfo['id'])->update($updateData);
             $response =  [
