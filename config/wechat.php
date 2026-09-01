@@ -1,6 +1,7 @@
 <?php
 return [
     'mchid'       => env('WECHATPAY_MCHID'),
+    'mini_appid'       => env('WECHAT_MINI_APPID'),
     'appid'       => env('WECHATPAY_APPID'),
     'apiv3_key'   => env('WECHATPAY_APIV3_KEY'),
     'pub_key_id'  => env('WECHATPAY_PUB_KEY_ID'),

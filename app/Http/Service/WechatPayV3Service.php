@@ -135,7 +135,7 @@ class WechatPayV3Service{
             'json' => [
                 'mchid'        => config('wechat.mchid'),
                 'out_trade_no' => $orderSn,
-                'appid'        => config('wechat.appid'),
+                'appid'        => config('wechat.mini_appid'),
                 'description'  => $description,
                 'notify_url'   => env('WECHAT_PAY_NOTIFY_URL'),
                 'amount'       => [
