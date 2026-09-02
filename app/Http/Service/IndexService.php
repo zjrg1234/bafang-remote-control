@@ -276,9 +276,7 @@ class IndexService{
                 ->get();
         }
 
-        if($user['phone_number'] == 18168526602){
-            $specialList = CuserAgent::select('id','agent_name','head_shot','type')->where('id',1)->get();
-        }
+      
         $sid = $specialList->pluck('id');
         $amountArray = CuserWallet::where('uid',$uid)->whereIn('type',$sid)->pluck('balance','type')->toArray();
         $newSpecialList = [];
