@@ -805,7 +805,7 @@ class VehicleService
             $v['center_value']['current_value'] = intval($v['center_value']['current_value']);
         }
 
-        if($vehicle['vehicle_type'] >= 10 && $vehicle['vehicle_type'] < 20 ){
+        if($vehicle['vehicle_type'] == 10){
             $get_vehicle_config_detail = json_decode($vehicleConfig['vehicle_config_detail'],true);
             $vehicleConfigDetail['ch1'] = $get_vehicle_config_detail['ch1'];
             $vehicleConfigDetail['ch2'] = $get_vehicle_config_detail['ch2'];
