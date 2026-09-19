@@ -879,8 +879,8 @@ class LoginService
                         ];
 
                         $user = $this->repo->createUsers($insertData);
-                        $balance = CuserWallet::getBalance($user['id'], $special_area['id']);
-                        if ($user && isset($balance)) {
+//                        $balance = CuserWallet::getBalance($user['id'], $special_area['id']);
+                        if ($user) {
 //            $response = $this->encrypt($this->registerLogin($user));
                             $response = $this->registerLogin($user);
 
@@ -1002,8 +1002,8 @@ class LoginService
                 ];
 
                 $user = $this->repo->createUsers($insertData);
-                $balance = CuserWallet::getBalance($user['id'], $special_area['id']);
-                if ($user && isset($balance)) {
+//                $balance = CuserWallet::getBalance($user['id'], $special_area['id']);
+                if ($user) {
                     $response = $this->registerLogin($user);
                     return ReponseData::reponseData($response);
                 }
