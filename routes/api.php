@@ -30,6 +30,7 @@ Route::group(['middleware' => 'checkAesEntry'], function () { //所有接口走�
     Route::post('/app/version', [IndexController::class, 'appVersion']);
     Route::post('/user/app/version', [IndexController::class, 'appVersion']);
     Route::post('/wechat/applet/login', [LoginController::class, 'wechatAppletLogin']); //微信小程序登陆
+    Route::post('/ks/applet/login', [LoginController::class, 'ksLogin']);//快手小程序登陆
 
     Route::group(['middleware'=>'CheckToken'], function () { //登陆后的接口走token校验
         //代理商端
@@ -68,6 +69,7 @@ Route::group(['middleware' => 'checkAesEntry'], function () { //所有接口走�
         //提现晚点做
         Route::post('/agent/withdraw', [AgentController::class, 'agentWithdraw']);//代理商提现
         Route::post('/agent/withdraw/record', [AgentController::class, 'agentWithdrawLog']);//代理商提现
+        Route::post('/agent/change/name', [IndexController::class, 'agentChangeName']);//用户前台-设置-修改手机号
 
 
         //代理->前台->我的场地
@@ -125,6 +127,7 @@ Route::group(['middleware' => 'checkAesEntry'], function () { //所有接口走�
             Route::post('/wechat/deposit', [IndexController::class, 'wechatDeposit']); //微信支付
             Route::post('/alipay/deposit', [IndexController::class, 'alipayDeposit']); //阿里
             Route::post('/wechat/jsapi/deposit', [IndexController::class, 'wechatJsapiDeposit']); //微信小程序支付
+            Route::post('/ks/deposit', [IndexController::class, 'ksDeposit']); //快手支付宝支付
             Route::post('/change/password', [LoginController::class, 'changePassword']);//用户前台-设置-修改密码
             Route::post('/change/phone', [LoginController::class, 'changePhone']);//用户前台-设置-修改手机号
             Route::post('/change/head/shot', [LoginController::class, 'changeHeadShot']);//用户前台-设置-修改头像
@@ -156,6 +159,8 @@ Route::group(['middleware' => 'checkAesEntry'], function () { //所有接口走�
 //微信支付回调
 Route::post('/wechat/notify', [IndexController::class, 'wechatNotify']);
 Route::post('/alipay/notify', [IndexController::class, 'alipayNotify']);
+Route::post('/ks/pay/notify', [IndexController::class, 'ksNotify']);
+
 Route::post('/upload/picture', [LoginController::class, 'uploadPicture']);//上传图片
 Route::post('/user/upload/picture', [LoginController::class, 'uploadPicture']);//上传图片
 
@@ -167,3 +172,6 @@ Route::post('/query/key',[VehicleController::class, 'queryKey']);
 Route::post('/transmitter/bind',[IndexController::class,'transmitterBind']);
 Route::post('/transmitter/un/bind',[IndexController::class,'transmitterUnBind']);
 Route::post('/transmitter/query/bind',[IndexController::class,'transmitterQueryBind']);
+// 快手一键登录
+// 创建订单（快手平台支付宝）
+// 快手支付异步回调

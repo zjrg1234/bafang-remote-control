@@ -1040,4 +1040,5 @@ class LoginService
             return response()->json(['code' => 400, 'msg' => $e->getMessage()]);
         }
     }
+
 }

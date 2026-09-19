@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Home;
 
 use App\Http\Controllers\Controller;
+use App\Http\Service\KsService;
 use App\Http\Service\LoginService;
 use Illuminate\Http\Request;
 
@@ -100,7 +101,12 @@ class LoginController extends Controller
         return $this->service->wechatAppletLogin($request);
 
     }
+    public function ksLogin(Request $request)
+    {
+        $service = new KsService();
+        return $service->ksLogin($request);
 
+    }
 
 
     public function udp(Request $request)

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Home;
 
 use App\Http\Controllers\Controller;
 use App\Http\Service\IndexService;
+use App\Http\Service\KsService;
 use Illuminate\Http\Request;
 
 class IndexController extends Controller
@@ -98,6 +99,12 @@ class IndexController extends Controller
     public function changeName(Request $request)
     {
         return $this->service->changeName($request);
+
+    }
+
+    public function agentChangeName(Request $request)
+    {
+        return $this->service->agentChangeName($request);
 
     }
 
@@ -203,5 +210,14 @@ class IndexController extends Controller
     {
         return $this->service->checkVehicleStatus($request);
 
+    }
+
+    public function ksNotify(Request $request,KsService $ksService)
+    {
+        return $ksService->ksNotify($request);
+    }
+    public function ksDeposit(Request $request,KsService $ksService)
+    {
+        return $ksService->ksDeposit($request);
     }
 }
