@@ -39,7 +39,7 @@ class KsService
         $ksSecret = config('ks.ks_secret');
         $loginService = new LoginService();
         // 快手 code2session 接口
-        $resp = Http::get('https://api.kuaishou.com/api/opensdk/code2session', [
+        $resp = Http::get('https://open.kuaishou.com/api/opensdk/code2session', [
             'app_id' => $ksId,
             'app_secret' =>$ksSecret,
             'code' => $code
@@ -175,7 +175,7 @@ class KsService
 
     public function createOrder($depositOrder,$payChannel,$ksOpenid)
     {
-        $url = 'https://api.kuaishou.com/api/opensdk/pay/create_order';
+        $url = 'https://open.kuaishou.com/api/opensdk/pay/create_order';
         $ksId     = config('ks.ks_appid');
         $ksSecret = config('ks.ks_secret');
         $ksNotifyUrl = config('ks.ks_notify_url');

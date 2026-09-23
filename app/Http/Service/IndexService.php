@@ -276,7 +276,7 @@ class IndexService{
                 ->get();
         }
 
-      
+
         $sid = $specialList->pluck('id');
         $amountArray = CuserWallet::where('uid',$uid)->whereIn('type',$sid)->pluck('balance','type')->toArray();
         $newSpecialList = [];
