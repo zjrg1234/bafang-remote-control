@@ -26,7 +26,7 @@ class KsService
     {
 
 //        $phoneCode = $request['phone_code'];
-        $code = $request->post('code');
+        $code = $request->post('ks_code');
         $encryptedData = $request->post('encrypted_data');
         $iv = $request->post('iv');
 
