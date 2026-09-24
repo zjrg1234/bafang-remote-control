@@ -39,9 +39,9 @@ class KsService
         $ksSecret = config('ks.ks_secret');
         $loginService = new LoginService();
         // 快手 code2session 接口
-        $resp = Http::get('https://open.kuaishou.com/api/opensdk/code2session', [
+        $resp = Http::asForm()->post('https://open.kuaishou.com/api/opensdk/code2session', [
             'app_id' => $ksId,
-            'app_secret' =>$ksSecret,
+            'app_secret' => $ksSecret,
             'code' => $code
         ]);
         $result = $resp->json();
