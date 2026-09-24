@@ -191,39 +191,39 @@ class KsService
         $params = [
             'app_id'        => $ksId,
             'out_order_no'  => $depositOrder['order_no'],
-            'total_amount'  => intval($depositOrder['amount'] * 100), //转分
+            'total_amount'  => intval($depositOrder['amount'] * 100),
             'subject'       => '电池购买',
             'body'          => '电池购买',
             'notify_url'    => $ksNotifyUrl,
-            'pay_channel'   => $payType,
-            'open_id'       =>$ksOpenid,
-            'expire_time'   => time() + 1800, // 新增！30分钟过期，unix时间戳(秒)
+            'pay_channel'   => $payChannel, // 2=支付宝，1=微信
+            'open_id'       => $ksOpenid,
+            'expire_time'   => time() + 1800,
             'detail'        => '电池商品详情描述',
-            'type'          => 10001, //实物商品类目，必填！
-
-
+            'type'          => 10001,
         ];
+
         ksort($params);
         $pairs = [];
         foreach ($params as $k=>$v) {
             if($v !== '' && $v !== null){
-                $pairs[] = $k . '=' . $v;
+                // ========= 重点！value urlencode UTF8 =========
+                $pairs[] = $k . '=' . urlencode((string)$v);
             }
         }
         $str = implode('&', $pairs);
         $str .= '&app_secret='.$ksSecret ;
-        $sign = md5($str);
+        $sign = strtolower(md5($str));
 
         $postData = $params;
-        unset($postData['app_id']); //重点：body不能带app_id，app_id只放url上
-        $postData['sign'] = $sign; // 追加签名
+        unset($postData['app_id']);
+        $postData['sign'] = $sign;
 
-// url带上app_id
-        $finalUrl = $url . '?app_id=' . $ksId . '&access_token=' . $accessToken;;
+        $finalUrl = $url . '?app_id=' . $ksId . '&access_token=' . $accessToken;
 
         $payResp = Http::withHeaders([
             'Content-Type' => 'application/json',
         ])->post($finalUrl, $postData);
+
 
         $payData = $payResp->json();
         if ($payData['result'] !== 1) {
