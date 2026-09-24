@@ -183,6 +183,11 @@ class KsService
         $ksSecret = config('ks.ks_secret');
         $ksNotifyUrl = config('ks.ks_notify_url');
         $accessToken = $this->getAccessToken();
+        if($payChannel == 'ZFB'){
+            $payType = 2;
+        }else{
+            $payType = 1;
+        }
         $params = [
             'app_id'        => $ksId,
             'out_order_no'  => $depositOrder['order_no'],
@@ -190,7 +195,7 @@ class KsService
             'subject'       => '电池购买',
             'body'          => '电池购买',
             'notify_url'    => $ksNotifyUrl,
-            'pay_channel'   => $payChannel,
+            'pay_channel'   => $payType,
             'open_id'       =>$ksOpenid,
             'expire_time'   => time() + 1800, // 新增！30分钟过期，unix时间戳(秒)
             'detail'        => '电池商品详情描述',
