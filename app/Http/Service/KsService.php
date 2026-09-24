@@ -211,7 +211,7 @@ class KsService
         $postData['sign'] = $sign; // 追加签名
 
 // url带上app_id
-        $finalUrl = $url . '?app_id=' . $ksId . '&access_token=' . $accessToken;;
+        $finalUrl = $url . '?app_id=' . $ksId ;
 
         $payResp = Http::withHeaders([
             'Content-Type' => 'application/json',
