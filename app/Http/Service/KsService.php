@@ -195,7 +195,7 @@ class KsService
             'subject'       => '电池购买',
             'body'          => '电池购买',
             'notify_url'    => $ksNotifyUrl,
-            'pay_channel'   => $payChannel, // 2=支付宝，1=微信
+            'pay_channel'   => $payType, // 2=支付宝，1=微信
             'open_id'       => $ksOpenid,
             'expire_time'   => time() + 1800,
             'detail'        => '电池商品详情描述',
@@ -207,7 +207,7 @@ class KsService
         foreach ($params as $k=>$v) {
             if($v !== '' && $v !== null){
                 // ========= 重点！value urlencode UTF8 =========
-                $pairs[] = $k . '=' . urlencode((string)$v);
+                $pairs[] = $k . '=' . $v;
             }
         }
         $str = implode('&', $pairs);
