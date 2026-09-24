@@ -185,7 +185,6 @@ class KsService
         $accessToken = $this->getAccessToken();
         $params = [
             'app_id'        => $ksId,
-            'app_secret'    => $ksSecret,
             'out_order_no'  => $depositOrder['order_no'],
             'total_amount'  => intval($depositOrder['amount'] * 100), //转分
             'subject'       => '电池购买',
@@ -195,23 +194,27 @@ class KsService
             'open_id'       =>$ksOpenid,
             'expire_time'   => time() + 1800, // 新增！30分钟过期，unix时间戳(秒)
             'detail'        => '电池商品详情描述',
+            'type'          => 10001, //实物商品类目，必填！
+
 
         ];
         ksort($params);
-        $str = '';
+        $pairs = [];
         foreach ($params as $k=>$v) {
             if($v !== '' && $v !== null){
-                $str .= $k . '=' . $v . '&';
+                $pairs[] = $k . '=' . $v;
             }
         }
-        $str .= 'app_secret='.$ksSecret ;
+        $str = implode('&', $pairs);
+        $str .= '&app_secret='.$ksSecret ;
         $sign = md5($str);
 
         $postData = $params;
+        unset($postData['app_id']); //重点：body不能带app_id，app_id只放url上
         $postData['sign'] = $sign; // 追加签名
 
 // url带上app_id
-        $finalUrl = $url . '?app_id=' . $ksId ;
+        $finalUrl = $url . '?app_id=' . $ksId . '&access_token=' . $accessToken;;
 
         $payResp = Http::withHeaders([
             'Content-Type' => 'application/json',
