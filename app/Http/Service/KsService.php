@@ -201,18 +201,17 @@ class KsService
                 $str .= $k . '=' . $v . '&';
             }
         }
-        $str .= 'app_secret='.$ksSecret;
+        $str .= 'app_secret='.$ksSecret ;
         $sign = md5($str);
 
         $postData = $params;
         $postData['sign'] = $sign; // 追加签名
 
 // url带上app_id
-        $finalUrl = $url . '?app_id=' . $ksId;
+        $finalUrl = $url . '?app_id=' . $ksId . '&access_token=' . $accessToken;;
 
         $payResp = Http::withHeaders([
             'Content-Type' => 'application/json',
-            'Authorization' => 'Bearer ' . $accessToken
         ])->post($finalUrl, $postData);
 
         $payData = $payResp->json();
