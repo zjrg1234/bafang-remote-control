@@ -192,7 +192,10 @@ class KsService
             'body'          => '电池购买',
             'notify_url'    => $ksNotifyUrl,
             'pay_channel'   => $payChannel,
-            'open_id'       =>$ksOpenid
+            'open_id'       =>$ksOpenid,
+            'expire_time'   => time() + 1800, // 新增！30分钟过期，unix时间戳(秒)
+
+
         ];
         ksort($params);
         $str = '';
