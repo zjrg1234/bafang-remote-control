@@ -38,12 +38,15 @@ class KsService
         $ksId     = config('ks.ks_appid');
         $ksSecret = config('ks.ks_secret');
         $loginService = new LoginService();
+        $url = "https://open.kuaishou.com/oauth2/mp/code2session";
+
         // 快手 code2session 接口
-        $resp = Http::asForm()->post('https://open.kuaishou.com/api/opensdk/code2session', [
-            'app_id' => $ksId,
+        $resp = Http::asForm()->post($url, [
+            'app_id'     => $ksId,
             'app_secret' => $ksSecret,
-            'code' => $code
+            'js_code'    => $code,
         ]);
+
         $result = $resp->json();
         if($result['result'] !== 1){
             return ReponseData::reponseFormat(2000,'登陆校验失败',$result);
