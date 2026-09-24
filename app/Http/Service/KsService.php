@@ -182,6 +182,7 @@ class KsService
         $ksId     = config('ks.ks_appid');
         $ksSecret = config('ks.ks_secret');
         $ksNotifyUrl = config('ks.ks_notify_url');
+        $accessToken = $this->getAccessToken();
         $params = [
             'app_id'        => $ksId,
             'app_secret'    => $ksSecret,
@@ -211,6 +212,7 @@ class KsService
 
         $payResp = Http::withHeaders([
             'Content-Type' => 'application/json',
+            'Authorization' => 'Bearer ' . $accessToken
         ])->post($finalUrl, $postData);
 
         $payData = $payResp->json();
@@ -317,5 +319,29 @@ class KsService
         $str .= $secret;
         $calc = md5($str);
         return strcasecmp($calc, $sign) === 0;
+    }
+
+    public function getAccessToken()
+    {
+        $ksId     = config('ks.ks_appid');
+        $ksSecret = config('ks.ks_secret');
+        $cacheKey = 'ks_access_token_' . $ksId;
+        $token = Redis::get($cacheKey);
+        if ($token) return $token;
+
+        $url = "https://open.kuaishou.com/oauth2/access_token";
+        $resp = Http::asForm()->post($url, [
+            'app_id'     => $ksId,
+            'app_secret' => $ksSecret,
+            'grant_type' => 'client_credentials'
+        ]);
+        $res = $resp->json();
+        if(empty($res) || $res['result'] !== 1){
+            throw new \Exception('获取快手access_token失败：'.json_encode($res));
+        }
+        $token = $res['access_token'];
+        $expire = $res['expires_in'] - 60; // 提前60秒过期
+        Redis::setex($cacheKey, $expire, $token);
+        return $token;
     }
 }
