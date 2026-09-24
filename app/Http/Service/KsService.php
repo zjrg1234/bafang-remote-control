@@ -194,7 +194,7 @@ class KsService
             'pay_channel'   => $payChannel,
             'open_id'       =>$ksOpenid,
             'expire_time'   => time() + 1800, // 新增！30分钟过期，unix时间戳(秒)
-
+            'detail'        => '电池商品详情描述',
 
         ];
         ksort($params);
