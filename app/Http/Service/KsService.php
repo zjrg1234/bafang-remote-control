@@ -178,11 +178,11 @@ class KsService
 
     public function createOrder($depositOrder,$payChannel,$ksOpenid)
     {
-        $url = 'https://open.kuaishou.com/api/opensdk/pay/create_order';
+        $url = "https://open.kuaishou.com/openapi/mp/developer/epay/create_order_with_channel";
         $ksId     = config('ks.ks_appid');
         $ksSecret = config('ks.ks_secret');
         $ksNotifyUrl = config('ks.ks_notify_url');
-        $payResp = Http::post($url, [
+        $params = [
             'app_id'        => $ksId,
             'app_secret'    => $ksSecret,
             'out_order_no'  => $depositOrder['order_no'],
@@ -192,9 +192,28 @@ class KsService
             'notify_url'    => $ksNotifyUrl,
             'pay_channel'   => $payChannel,
             'open_id'       =>$ksOpenid
-        ]);
-        $payData = $payResp->json();
+        ];
+        ksort($params);
+        $str = '';
+        foreach ($params as $k=>$v) {
+            if($v !== '' && $v !== null){
+                $str .= $k . '=' . $v . '&';
+            }
+        }
+        $str .= 'app_secret='.$ksSecret;
+        $sign = md5($str);
 
+        $postData = $params;
+        $postData['sign'] = $sign; // 追加签名
+
+// url带上app_id
+        $finalUrl = $url . '?app_id=' . $ksId;
+
+        $payResp = Http::withHeaders([
+            'Content-Type' => 'application/json',
+        ])->post($finalUrl, $postData);
+
+        $payData = $payResp->json();
         if ($payData['result'] !== 1) {
             return response()->json([
                 'code' => -1,
