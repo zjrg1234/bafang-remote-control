@@ -178,65 +178,67 @@ class KsService
 
     public function createOrder($depositOrder,$payChannel,$ksOpenid)
     {
-        $url = "https://open.kuaishou.com/openapi/mp/developer/epay/create_order_with_channel";
+        if (empty($ksOpenid)) {
+            return response()->json(['code' => 2000, 'msg' => '缺少 open_id']);
+        }
+
+        $url = "https://open.kuaishou.com/openapi/mp/developer/epay/create_order";
         $ksId     = config('ks.ks_appid');
         $ksSecret = config('ks.ks_secret');
         $ksNotifyUrl = config('ks.ks_notify_url');
         $accessToken = $this->getAccessToken();
-        if($payChannel == 'ZFB'){
-            $payType = 2;
-        }else{
-            $payType = 1;
-        }
-        $params = [
-            'app_id'        => $ksId,
-            'out_order_no'  => $depositOrder['order_no'],
-            'total_amount'  => intval($depositOrder['amount'] * 100),
-            'subject'       => '电池购买',
-            'body'          => '电池购买',
-            'notify_url'    => $ksNotifyUrl,
-            'pay_channel'   => $payType, // 2=支付宝，1=微信
+
+        // 🗡️ 终极净化：绝对不要传快手文档没定义的参数（如 body, type, expire_time）
+        // 必须让本地参与签名的参数，和快手网关解析后保留的参数，达到像素级一致！
+        $bodyParams = [
+            'app_id'       => $ksId,
+            'detail'       => '电池商品详情描述',
+            'notify_url'   => $ksNotifyUrl,
+            'expire_time'  => 1800, // 👈 只要把 time() + 去掉，只留相对秒数即可（半小时）        'open_id'      => $ksOpenid,
+            'out_order_no' => $depositOrder['order_no'],
+            'subject'      => '电池购买',
+            'total_amount' => (int) round($depositOrder['amount'] * 100),
             'open_id'       => $ksOpenid,
-            'expire_time'   => time() + 1800,
-            'detail'        => '电池商品详情描述',
-            'type'          => 10001,
         ];
 
-        ksort($params);
+        // 字典排序
+        ksort($bodyParams);
         $pairs = [];
-        foreach ($params as $k=>$v) {
-            if($v !== '' && $v !== null){
-                // ========= 重点！value urlencode UTF8 =========
-                $pairs[] = $k . '=' . $v;
-            }
+        foreach ($bodyParams as $k => $v) {
+            $pairs[] = $k . '=' . $v;
         }
         $str = implode('&', $pairs);
-        $str .= '&app_secret='.$ksSecret ;
+
+        // 回归最正确的官方签名法则：直接追加小程序 App Secret，不加任何连字符
+        $str .= $ksSecret;
         $sign = strtolower(md5($str));
 
-        $postData = $params;
-        unset($postData['app_id']);
+        // 组装发出去的 JSON Body
+        $postData = $bodyParams;
         $postData['sign'] = $sign;
 
+        // URL 依然挂载参数确保网关路由精准识别
         $finalUrl = $url . '?app_id=' . $ksId . '&access_token=' . $accessToken;
-        Log::info('快手支付签名原始串:', ['str' => $str, 'sign' => $sign]);
+
         $payResp = Http::withHeaders([
             'Content-Type' => 'application/json',
         ])->post($finalUrl, $postData);
 
-
         $payData = $payResp->json();
-        if ($payData['result'] !== 1) {
+        \Log::info('快手极简版下单结果:', $payData);
+
+        if (isset($payData['result']) && $payData['result'] !== 1) {
             return response()->json([
                 'code' => -1,
                 'msg'  => '创建支付订单失败',
                 'err'  => $payData
             ]);
         }
+
+        // 成功后把 order_info 甩给前端的 ks.pay() 就能拉起支付了
         return [
-            'ks_order_id'  => $payData['order_id'],
+            'order_info'   => $payData['order_info'],
             'out_order_no' => $depositOrder['order_no'],
-            'pay_channel'  => $payChannel
         ];
     }
 
@@ -247,24 +249,30 @@ class KsService
         $appSecret = config('ks.ks_secret');
         $check = $this->ksSignVerify($params, $appSecret, $sign);
         if (!$check) {
-            return response('fail', 400);
+            Log::error('快手回调验签失败', $params);
+            return response()->json(['result' => 0, 'error_msg' => '验签失败']); // 返回 0 告知快手失败
         }
         if ($params['status'] == 'SUCCESS') {
             try {
                 // 如果不是支付成功状态，直接抛弃
 
                 $outTradeNo = $params['out_order_no'];
-                $realPayCent = $params['order_amount'] ?? 0; // 单位：分
+                $realPayCent = $params['total_amount'] ?? ($params['order_amount'] ?? 0);
                 $payAmount = $realPayCent / 100; // 转为元
                 $tradeNo = $params['trade_no'];
                 $order = DepositLog::where('order_no', $outTradeNo)->first();
                 if (!$order) {
                     return response('fail', 400);
                 }
-
+                if ($realPayCent != intval(round($order->amount * 100))) {
+                    Log::error('快手回调金额异常（疑似篡改）', [
+                        'order' => $outTradeNo, 'callback_cent' => $realPayCent, 'db_amount' => $order->amount
+                    ]);
+                    return response()->json(['result' => 0, 'error_msg' => '支付金额不匹配']);
+                }
                 if ($order->type == 1 || $order->type == 2) {
                     Log::info('支付回调订单：' . $outTradeNo . '已完成，重复回调');
-                    return response()->json(['code' => 'SUCCESS', 'message' => '成功']);
+                    return response()->json(['result' => 1]);
                 }
                 $order->update([
                     'finish_time' => time(),
@@ -296,14 +304,16 @@ class KsService
                         ]
                     );
                 }
-                return response()->json(['code' => 'SUCCESS', 'message' => '成功']);
+                return response()->json(['result' => 1]);
             } catch (\Exception $e) {
                 Log::error($e->getMessage());
-                return response('fail', 400);
+                return response()->json(['result' => 0, 'error_msg' => '服务器内部异常']);
 
             }
         }else{
-            return response('fail', 400);
+            // 如果 status 不是 SUCCESS（比如退款等），记录日志但返回成功，避免快手一直发
+            Log::warning('快手收到非成功回调', $params);
+            return response()->json(['result' => 1]);
         }
     }
 
