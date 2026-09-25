@@ -183,7 +183,11 @@ class KsService
         $ksSecret = config('ks.ks_secret');
         $ksNotifyUrl = config('ks.ks_notify_url');
         $accessToken = $this->getAccessToken();
-        $payType = ($payChannel == 'ZFB') ? 'ALIPAY' : 'WECHAT';
+        if($payChannel == 'ZFB'){
+            $payType = 2;
+        }else{
+            $payType = 1;
+        }
         $params = [
             'app_id'        => $ksId,
             'out_order_no'  => $depositOrder['order_no'],
@@ -207,14 +211,15 @@ class KsService
             }
         }
         $str = implode('&', $pairs);
-        $str .= $ksSecret;
+        $str .= '&app_secret='.$ksSecret ;
         $sign = strtolower(md5($str));
 
         $postData = $params;
+        unset($postData['app_id']);
         $postData['sign'] = $sign;
 
         $finalUrl = $url . '?app_id=' . $ksId . '&access_token=' . $accessToken;
-
+        Log::info('快手支付签名原始串:', ['str' => $str, 'sign' => $sign]);
         $payResp = Http::withHeaders([
             'Content-Type' => 'application/json',
         ])->post($finalUrl, $postData);
