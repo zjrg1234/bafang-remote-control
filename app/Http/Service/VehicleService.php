@@ -16,12 +16,21 @@ use App\Models\DrivingRecord;
 use App\Models\ReponseData;
 use App\Models\Vehicle;
 use App\Models\VehicleConfig;
+use App\Models\VehicleImage;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Redis;
 
 class VehicleService
 {
+
+    protected $imageTypes = [
+        1=>'车辆图片',
+        2=>'遥控船图片',
+        3=>'挖机图片',
+        4=>'铲车图片',
+        5=>'娃娃机图片',
+    ];
     protected $setvice;
     public function __construct()
     {
@@ -234,9 +243,7 @@ class VehicleService
         if(!$data['agent_id']){
             return ReponseData::reponseFormat(2000,'代理id必传!');
         }
-        if(!$data['vehicle_image']){
-            return ReponseData::reponseFormat(2000,'车辆图片必填!');
-        }
+
         if(!$data['battery']){
             return ReponseData::reponseFormat(2000,'车辆电池必填!');
         }
@@ -253,6 +260,20 @@ class VehicleService
 //            return ReponseData::reponseFormat(2000,'一代机二代机必须填');
 //
 //        }
+        if(!$data['vehicle_image']){
+            if($data['vehicle_type'] < 20){
+                $vehicle_image = VehicleImage::where('type',1)->where('status',1)->value('image');
+            }elseif ($data['vehicle_type'] >=20 && $data['vehicle_type'] <= 30) {
+                $vehicle_image = VehicleImage::where('type',3)->where('status',1)->value('image');
+            }else{
+                $vehicle_image = '';
+            }
+            if($vehicle_image){
+                $data['vehicle_image'] = $vehicle_image;
+            }else{
+                $data['vehicle_image'] = '';
+            }
+        }
         $data['vehicle_battery'] = '5%';
         $vehicleConfig = [
             'direction_dynamics' => json_encode([

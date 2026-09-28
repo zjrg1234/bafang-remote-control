@@ -108,6 +108,20 @@ class LoginController extends Controller
 
     }
 
+    public function appKsLogin(Request $request)
+    {
+        $service = new KsService();
+        return $service->appKsLogin($request);
+
+    }
+
+    public function appDyLogin(Request $request)
+    {
+        return $this->service->appDyLogin($request);
+
+
+    }
+
 
     public function udp(Request $request)
     {

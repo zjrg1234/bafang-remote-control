@@ -2,6 +2,8 @@
 
 namespace App\Http\Service;
 
+use App\Models\ActivityNotic;
+use App\Models\CommonProblem;
 use App\Models\Notice;
 use App\Models\ReponseData;
 
@@ -106,6 +108,33 @@ class NoticeService
 
 
         return ReponseData::reponseFormatList(200,'获取成功',$list);
+    }
+
+    public function problemList($request)
+    {
+        $uid = $request['uid'] ?? null;
+
+        if(!$uid)
+        {
+            return ReponseData::reponseFormat(2000,'用户id必传');
+        }
+
+        $list = CommonProblem::get();
+
+        return ReponseData::reponseFormatList(200,'成功',$list);
+    }
+
+    public function activityNotice($request)
+    {
+        $uid = $request['uid'] ?? null;
+
+        if(!$uid)
+        {
+            return ReponseData::reponseFormat(2000,'用户id必传');
+        }
+        $list = ActivityNotic::where('status',1)->get();
+
+        return ReponseData::reponseFormatList(200,'成功',$list);
     }
 
 }

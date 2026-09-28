@@ -31,5 +31,5 @@ class ActivityNotic extends Model
     /**
      * @var array
      */
-    protected $fillable = ['type', 'special_area', 'index_image','discover_image','content','remark','special_area_name', 'activity_title', 'activity_image', 'is_index', 'is_discover', 'activity_type', 'status', 'sort', 'created_at', 'updated_at'];
+    protected $fillable = ['type', 'special_area', 'index_image','discover_image','content','remark','special_area_name', 'activity_title', 'activity_image', 'is_index', 'is_discover', 'activity_type', 'status', 'sort','image_url', 'created_at', 'updated_at'];
 }

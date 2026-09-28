@@ -31,6 +31,10 @@ Route::group(['middleware' => 'checkAesEntry'], function () { //所有接口走�
     Route::post('/user/app/version', [IndexController::class, 'appVersion']);
     Route::post('/wechat/applet/login', [LoginController::class, 'wechatAppletLogin']); //微信小程序登陆
     Route::post('/ks/applet/login', [LoginController::class, 'ksLogin']);//快手小程序登陆
+    // APP抖音一键登录
+    Route::post('/app/dy/login', [LoginController::class, 'appDyLogin']);
+    // APP快手一键登录
+    Route::post('/app/ks/login', [LoginController::class, 'appKsLogin']);
 
     Route::group(['middleware'=>'CheckToken'], function () { //登陆后的接口走token校验
         //代理商端
@@ -143,6 +147,8 @@ Route::group(['middleware' => 'checkAesEntry'], function () { //所有接口走�
             Route::post('/processing/alarm/create', [VehicleController::class, 'processingAlarmCreate']); //上报告警
 
             Route::post('/notice', [NoticeController::class, 'notice']);
+            Route::post('/common/problem', [NoticeController::class, 'problemList']);
+            Route::post('/activity/notice', [NoticeController::class, 'activityNotice']);
 
 
         });

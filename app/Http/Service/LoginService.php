@@ -1041,4 +1041,106 @@ class LoginService
         }
     }
 
+
+    public function appDyLogin($request)
+    {
+
+//        $phoneCode = $request['phone_code'];
+        $code = $request->post('dy_code');
+//        $encryptedData = $request->post('encrypted_data');
+//        $iv = $request->post('iv');
+
+        if(empty($code)){
+            return ReponseData::reponseFormat(2000,'code必传');
+        }
+        $appId     = config('dy.app_id');
+        $appSecret = config('dy.app_secret');
+        $loginService = new LoginService();
+        $url = 'https://open.douyin.com/oauth/access_token/';
+
+        $tokenResp = Http::asForm()->post($url, [
+            'client_key'    => $appId,
+            'client_secret' => $appSecret,
+            'code'          => $code,
+            'grant_type'    => 'authorization_code',
+        ]);
+
+        $tokenData = $tokenResp->json();
+        $data = $tokenData['data'] ?? [];
+        if (($data['error_code'] ?? -1) !== 0 || empty($data['access_token'])) {
+            Log::error('抖音获取Token失败', ['response' => $tokenData]);
+            return ReponseData::reponseFormat(2000,'抖音授权失败：' . ($data['description'] ?? ($tokenData['message'] ?? '未知错误')));
+        }
+
+        $dyOpenid = $data['open_id'];
+        $sessionKey = $data['access_token'];
+        $unionId     = $data['union_id'] ?? null;
+        // 2. 获取用户公开信息 (前提是前端 scope 带了 mobile 且用户同意)
+        $userInfoUrl = 'https://open.douyin.com/oauth/userinfo/';
+        $userResp = Http::asJson()->post($userInfoUrl, [
+            'access_token' => $sessionKey,
+            'open_id'      => $dyOpenid,
+        ]);
+
+        $userData = $userResp->json();
+        $userRespJson = $userData['data'] ?? [];
+
+        if (($userRespJson['error_code'] ?? -1) !== 0) {
+            Log::error('获取抖音用户信息失败', ['response' => $userData]);
+            return ReponseData::reponseFormat(2000,'获取抖音用户信息失败：' . ($userInfo['description'] ?? '未知错误'));
+        }
+        $mobile = $userInfo['mobile'] ?? null;
+        $userInfo = $this->repo->getUserByMobile($mobile);
+        if(!isset($userInfo)) {
+            $special_area = CuserAgent::where('superior_agent_id',0)->inRandomOrder()->first();
+            $insertData = [
+                'phone_number' => $mobile,
+                'special_area' => $special_area['id'],
+                'special_area_name' => $special_area['agent_name'],
+                'register_time' => time(),
+                'head_shot' => 'https://bfyk.oss-cn-hangzhou.aliyuncs.com/yk/image/ZKSJ_1785999958KSGK.jpeg', //默认头像
+                'username' => '八方远控' . mt_rand(10000000, 99999999),
+                'show_id' => mt_rand(10000000, 99999999),
+                'dy_openid' => $dyOpenid,
+                'session_key' => $sessionKey,
+
+            ];
+
+            $user = $this->repo->createUsers($insertData);
+            $balance = CuserWallet::getBalance($user['id'], $special_area['id']);
+            if ($user && isset($balance)) {
+                $response = $loginService->registerLogin($user);
+                return ReponseData::reponseData($response);
+            }
+        }
+        if($userInfo['is_cancel'] == 1){
+            $userInfo->update(['is_cancel'=>0]);
+        }
+//                    if($userInfo['is_locked'] == 1){
+//                        $userInfo->update(['is_locked'=>0]);
+//                    }
+        if($userInfo['is_delete'] == 1){
+            return ReponseData::reponseFormat(2000,'账号被删除,请联系管理员!');
+        }
+        $nowTime                 = time();
+//            $sessionKey              = base64_encode(md5($userInfo['id'].$userInfo['user_name'].$nowTime));
+        $key = 'token_'.$userInfo['id'];
+        Redis::set($key, $sessionKey);
+
+        $updateData = [
+            'last_online_time' => $nowTime,
+            'session_key' => $sessionKey,
+            'ks_openid' => $dyOpenid,
+        ];
+        Cuser::where('id', $userInfo['id'])->update($updateData);
+        $response =  [
+            'id' => $userInfo['id'],
+            'special_area' => $userInfo['special_area'],
+            'session_key' => $sessionKey,
+            'new_user' => 0,
+        ];
+        $responseData = $response;
+        return ReponseData::reponseFormatList(200,'成功',$responseData);
+    }
+
 }

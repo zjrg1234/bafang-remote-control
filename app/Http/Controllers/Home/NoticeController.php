@@ -42,4 +42,15 @@ class NoticeController extends Controller
     {
         return $this->service->notice($request);
     }
+    public function problemList(Request $request)
+    {
+        return $this->service->problemList($request);
+
+    }
+
+    public function activityNotice(Request $request)
+    {
+        return $this->service->activityNotice($request);
+
+    }
 }

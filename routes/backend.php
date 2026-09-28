@@ -183,5 +183,10 @@ Route::group(['middleware' => 'AuthToken'], function () {
     Route::post('/notice/update',[NoticeController::class,'update']);
     Route::post('/notice/delete',[NoticeController::class,'delete']);
 
+//    //车辆默认图片
+//    Route::post('/vehicle/image/list',[NoticeController::class,'list']);
+//    Route::post('/vehicle/image/create',[NoticeController::class,'create']);
+//    Route::post('/vehicle/image/update',[NoticeController::class,'update']);
+//    Route::post('/vehicle/image/delete',[NoticeController::class,'delete']);
 
 });

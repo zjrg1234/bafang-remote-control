@@ -66,6 +66,8 @@ class ActivityService{
             'status' => $request['status'] ?? null,
             'sort' => $request['sort'] ?? null,
             'remark' => $request['remark'] ?? '',
+            'image_url' => $request['image_url'] ?? '',
+
         ];
         if($data['type'] === null){
             return ReponseData::reponseFormat(2000,'公告所属类型必填');
@@ -101,22 +103,6 @@ class ActivityService{
     public function Update($request)
     {
         $id = $request['id'] ?? null;
-        $data = [
-            'type' => $request['type'] ?? null,
-            'activity_title' => $request['activity_title'] ?? null,
-            'activity_image' => $request['activity_image'] ?? null,
-            'is_index' => $request['is_index'] ?? null,
-            'content' => $request['content'] ?? '',
-            'is_discover' => $request['is_discover'] ?? null,
-            'index_image' => $request['index_image'] ?? '',
-            'discover_image' => $request['discover_image'] ?? '',
-            'status' => $request['status'] ?? null,
-            'sort' => $request['sort'] ?? null,
-            'activity_type' => $request['activity_type'] ?? null,
-            'remark' => $request['remark'] ?? '',
-            'special_area'=> $request['special_area'] ?? 0,
-        ];
-
         if(!$id){
             return ReponseData::reponseFormat(2000,'id必传');
         }
@@ -124,6 +110,25 @@ class ActivityService{
         if(!$list){
             return ReponseData::reponseFormat(2000,'未找到该条数据');
         }
+        $data = [
+            'type' => $request['type'] ?? $list['type'],
+            'activity_title' => $request['activity_title'] ?? $list['activity_title'],
+            'activity_image' => $request['activity_image'] ?? $list['activity_image'],
+            'is_index' => $request['is_index'] ?? $list['is_index'],
+            'content' => $request['content'] ?? $list['content'],
+            'is_discover' => $request['is_discover'] ?? $list['is_discover'],
+            'index_image' => $request['index_image'] ?? $list['index_image'],
+            'discover_image' => $request['discover_image'] ?? $list['discover_image'],
+            'status' => $request['status'] ?? $list['status'],
+            'sort' => $request['sort'] ?? $list['sort'],
+            'activity_type' => $request['activity_type'] ?? $list['activity_type'],
+            'remark' => $request['remark'] ?? $list['remark'],
+            'special_area'=> $request['special_area'] ?? $list['special_area'],
+            'image_url' => $request['image_url'] ?? $list['image_url'],
+        ];
+
+
+
         if(!$data['type']){
             return ReponseData::reponseFormat(2000,'公告所属类型必填');
         }
