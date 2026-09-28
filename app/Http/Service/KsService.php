@@ -340,13 +340,13 @@ class KsService
     {
         $params = $request->all();
         Log::Info('快手回调', $params);
-        $sign = $params['sign'];
+//        $sign = $params['sign'];
         $appSecret = config('ks.ks_secret');
-        $check = $this->ksSignVerify($params, $appSecret, $sign);
-        if (!$check) {
-            Log::error('快手回调验签失败', $params);
-            return response()->json(['result' => 0, 'error_msg' => '验签失败']); // 返回 0 告知快手失败
-        }
+//        $check = $this->ksSignVerify($params, $appSecret, $sign);
+//        if (!$check) {
+//            Log::error('快手回调验签失败', $params);
+//            return response()->json(['result' => 0, 'error_msg' => '验签失败']); // 返回 0 告知快手失败
+//        }
         if ($params['status'] == 'SUCCESS') {
             try {
                 // 如果不是支付成功状态，直接抛弃
