@@ -339,10 +339,10 @@ class KsService
     public function ksNotify($request)
     {
         $params = $request->all();
+        Log::Info('快手回调', $params);
         $sign = $params['sign'];
         $appSecret = config('ks.ks_secret');
         $check = $this->ksSignVerify($params, $appSecret, $sign);
-        Log::Info('快手回调', $params);
         if (!$check) {
             Log::error('快手回调验签失败', $params);
             return response()->json(['result' => 0, 'error_msg' => '验签失败']); // 返回 0 告知快手失败
