@@ -347,6 +347,7 @@ class KsService
 //            Log::error('快手回调验签失败', $params);
 //            return response()->json(['result' => 0, 'error_msg' => '验签失败']); // 返回 0 告知快手失败
 //        }
+        $params = $params['data'];
         if ($params['status'] == 'SUCCESS') {
             try {
                 // 如果不是支付成功状态，直接抛弃
@@ -359,7 +360,7 @@ class KsService
                 if (!$order) {
                     return response('fail', 400);
                 }
-                if ($realPayCent != intval(round($order->amount * 100))) {
+                if ($payAmount != $order->amount * 100) {
                     Log::error('快手回调金额异常（疑似篡改）', [
                         'order' => $outTradeNo, 'callback_cent' => $realPayCent, 'db_amount' => $order->amount
                     ]);
