@@ -360,7 +360,7 @@ class KsService
                 if (!$order) {
                     return response('fail', 400);
                 }
-                if ($payAmount != $order->amount * 100) {
+                if ($payAmount != $order->amount) {
                     Log::error('快手回调金额异常（疑似篡改）', [
                         'order' => $outTradeNo, 'callback_cent' => $realPayCent, 'db_amount' => $order->amount
                     ]);
