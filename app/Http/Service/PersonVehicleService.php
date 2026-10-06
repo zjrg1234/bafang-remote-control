@@ -592,7 +592,7 @@ class PersonVehicleService
         if($exists){
             return ReponseData::reponseFormat(2000,'接收机重复!');
         }
-        $data['app_transmitter_id'] = mt_rand(40000000,49999999);
+        $data['transmitter_id'] = mt_rand(40000000,49999999);
 
         $vehicle = PersonVehicle::create($data);
         $vehicleConfig['vehicle_id'] = $vehicle['id'];
