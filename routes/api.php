@@ -9,6 +9,7 @@ use App\Http\Controllers\Home\UserController;
 use App\Http\Controllers\Home\AgentController;
 use App\Http\Controllers\Home\IndexController;
 use App\Http\Controllers\Home\NoticeController;
+use \App\Http\Controllers\Home\PersonVehicleController;
 
 
 /*
@@ -34,7 +35,7 @@ Route::group(['middleware' => 'checkAesEntry'], function () { //所有接口走�
     // APP抖音一键登录
     Route::post('/app/dy/login', [LoginController::class, 'appDyLogin']);
     // APP快手一键登录
-    Route::post('/app/ks/login', [LoginController::class, 'appKsLogin']);
+    Route::post('/app/wechat/login', [LoginController::class, 'appWechatLogin']);
 
     Route::group(['middleware'=>'CheckToken'], function () { //登陆后的接口走token校验
         //代理商端
@@ -150,6 +151,16 @@ Route::group(['middleware' => 'checkAesEntry'], function () { //所有接口走�
             Route::post('/common/problem', [NoticeController::class, 'problemList']);
             Route::post('/activity/notice', [NoticeController::class, 'activityNotice']);
 
+            //个人
+            Route::post('/person/vehicle/list', [PersonVehicleController::class, 'vehicleList']);//车辆列表
+            Route::post('/person/delete/vehicle', [PersonVehicleController::class, 'deleteVehicle']);//解绑车辆
+            Route::post('/person/add/vehicle', [PersonVehicleController::class, 'addVehicle']); //添加车辆
+            Route::post('/person/vehicle/detail', [PersonVehicleController::class, 'vehicleDetail']); //车辆详情
+            Route::post('/person/vehicle/detail/save', [PersonVehicleController::class, 'vehicleDetailSave']); //车辆保存
+            Route::post('/person/update/vehicle', [PersonVehicleController::class, 'updateVehicle']); //车辆编辑
+            Route::post('/person/reset/default/channel', [PersonVehicleController::class, 'vehicleDetailReset']); //车辆配置重置
+            Route::post('/person/start/driving',[PersonVehicleController::class,'startDriving']); //开始驾驶
+            Route::post('/bind/app/phone',[PersonVehicleController::class,'bindAppLoginPhone']);
 
         });
     });
