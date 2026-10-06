@@ -25,7 +25,7 @@ class PersonVehicle extends Model
 {
     /**
      * The table associated with the model.
-     * 
+     *
      * @var string
      */
     protected $table = 'person_vehicle';
@@ -33,5 +33,7 @@ class PersonVehicle extends Model
     /**
      * @var array
      */
-    protected $fillable = ['uid', 'vehicle_type', 'vehicle_sub_type', 'vehicle_image', 'vehicle_name', 'battery', 'front_camera', 'rear_camera', 'transmitter_id', 'receiver_id', 'vehicle_state', 'vehicle_battery', 'camera_type', 'default_camera_clarity'];
+    protected $fillable = ['uid', 'vehicle_type', 'vehicle_sub_type', 'vehicle_image', 'vehicle_name', 'battery', 'front_camera', 'rear_camera', 'transmitter_id', 'receiver_id', 'vehicle_state', 'vehicle_battery', 'camera_type', 'default_camera_clarity'
+    ,'forward_type','top_speed','vehicle_sorting','vehicle_introduction'
+    ];
 }

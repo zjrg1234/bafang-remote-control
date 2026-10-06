@@ -96,8 +96,14 @@ class PersonVehicleService
             'receiver_id' => $request['receiver_id'] ?? null,
             'vehicle_type' => $request['vehicle_type'] ?? null,
             'uid' => $request['uid'] ?? null,
-            'sub_type' => $request['sub_type'] ?? 1,
+            'vehicle_sub_type' => $request['vehicle_sub_type'] ?? 1,
+            'camera_type' => $request['camera_type'] ?? 1,
+            'vehicle_introduction' => $request['vehicle_introduction'] ?? '',
+            'top_speed' => $request['top_speed'] ?? '',
+            'vehicle_sorting' => $request['vehicle_sorting'] ?? '1',
+            'forward_type' => $request['type'] ?? 1,
         ];
+
         if(!$data['uid']){
             return ReponseData::reponseFormat(2000,'用户id必传!');
         }
@@ -717,7 +723,11 @@ class PersonVehicleService
             'receiver_id' => $request['receiver_id'] ?? null,
             'vehicle_type' => $request['vehicle_type'] ?? null,
             'forward_type' => $request['type'] ?? 1,
-            'sub_type' => $request['sub_type'] ?? 1
+            'sub_type' => $request['sub_type'] ?? 1,
+            'camera_type' => $request['camera_type'] ?? 1,
+            'vehicle_introduction' => $request['vehicle_introduction'] ?? '',
+            'top_speed' => $request['top_speed'] ?? '',
+            'vehicle_sorting' => $request['vehicle_sorting'] ?? '1',
         ];
 
         $vehicle = PersonVehicle::where('id', $id)->first();
