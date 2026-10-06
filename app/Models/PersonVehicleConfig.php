@@ -28,7 +28,7 @@ class PersonVehicleConfig extends Model
 {
     /**
      * The table associated with the model.
-     * 
+     *
      * @var string
      */
     protected $table = 'person_vehicle_config';
@@ -36,5 +36,5 @@ class PersonVehicleConfig extends Model
     /**
      * @var array
      */
-    protected $fillable = ['vehicle_id', 'direction_dynamics', 'accelerator_dynamics', 'direction_center', 'accelerator_center', 'mixed_control', 'video_definition', 'rear_camera_type', 'operation_mode', 'vehicle_config_detail', 'reverse_left_right', 'reverse_up_down', 'reverse_rotation', 'change_ui_control', 'app_transmitter_id', 'created_at', 'updated_at'];
+    protected $fillable = ['vehicle_id', 'direction_dynamics', 'accelerator_dynamics', 'direction_center', 'accelerator_center', 'mixed_control', 'video_definition', 'rear_camera_type', 'operation_mode', 'vehicle_config_detail', 'reverse_left_right', 'reverse_up_down', 'reverse_rotation', 'change_ui_control', 'app_transmitter_id','default_camera_clarity','camera_type', 'created_at', 'updated_at'];
 }
