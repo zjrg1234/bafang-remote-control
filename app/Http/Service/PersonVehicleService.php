@@ -633,6 +633,8 @@ class PersonVehicleService
         $vehicleConfig['receiver_id'] = $vehicle['receiver_id'];
         $vehicleConfig['vehicle_config_detail'] = json_decode($vehicleConfig['vehicle_config_detail']);
         $vehicleConfig['app_transmitter_id'] = $vehicle['transmitter_id'];
+        $vehicleConfig['vehicle_introduction'] = $vehicle['vehicle_introduction'];
+        $vehicleConfig['vehicle_sorting'] = $vehicle['vehicle_sorting'];
 
         $vehicleConfig['content_url'] = env('CONTENT_URL','xhzzf.huazyk.cn') ;
         $vehicleConfig['content_url_port'] = env('CONTENT_URL_PORT','8899') ;
