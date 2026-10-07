@@ -1193,4 +1193,36 @@ class PersonVehicleService
         return ReponseData::reponseFormat(200,'绑定成功');
     }
 
+    public function refreshClose($request)
+    {
+        $data = [
+            'uid' => $request['uid'] ?? null,
+            'id' => $request['id'] ?? null,
+        ];
+        if(!$data['uid']){
+            return ReponseData::reponseFormat(2000,'用户id必传!');
+        }
+
+        if(!$data['id']){
+            return ReponseData::reponseFormat(2000,'车辆id必传!');
+        }
+
+        $vehicle = Vehicle::where('id',$data['id'])->first();
+
+        if(!$vehicle){
+            return  ReponseData::reponseFormat(2000,'未找到该车辆');
+        }
+        $vehicle->update(['vehicle_state' => 1]);
+        Redis::del($vehicle['transmitter_id']); //解绑车辆接收机、发射机id
+        $receiverJson = Redis::get($vehicle['receiver_id'].'_receiver');
+        $receiverJson = json_decode($receiverJson,true);
+        $receiverJson['transmitter_id'] = '0';
+        $receiverJson['transmitter_host_port'] = '';
+        Redis::set($vehicle['receiver_id'].'_receiver',json_encode($receiverJson));
+        $key = 'person_start_driving_'.$vehicle['id'];
+        Redis::del($key);
+        Redis::del('vehicle_person_'.$vehicle['id']); //结束驾驶解锁车
+
+        return ReponseData::reponseFormat(200,'刷新关闭成功');
+    }
 }

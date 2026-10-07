@@ -161,6 +161,8 @@ Route::group(['middleware' => 'checkAesEntry'], function () { //所有接口走�
             Route::post('/person/reset/default/channel', [PersonVehicleController::class, 'vehicleDetailReset']); //车辆配置重置
             Route::post('/person/start/driving',[PersonVehicleController::class,'startDriving']); //开始驾驶
             Route::post('/bind/app/phone',[PersonVehicleController::class,'bindAppLoginPhone']);
+            Route::post('/person/refresh/close',[PersonVehicleController::class,'refreshClose']);
+
 
         });
     });

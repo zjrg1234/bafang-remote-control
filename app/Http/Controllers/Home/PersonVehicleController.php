@@ -63,6 +63,12 @@ class PersonVehicleController extends Controller
 
     }
 
+    public function refreshClose(Request $request)
+    {
+        return $this->service->refreshClose($request);
+
+    }
+
 //    public function processingAlarmCreate(Request $request)
 //    {
 //        return $this->service->processingAlarmCreate($request);
