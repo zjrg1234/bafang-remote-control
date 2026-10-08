@@ -1058,7 +1058,7 @@ class LoginService
         $loginService = new LoginService();
         $url = 'https://open.douyin.com/oauth/access_token';
         $requestBody = [
-            'client_id'    => $appId,
+            'client_key'    => $appId,
             'client_secret' => $appSecret,
             'code'          => $code,
             'grant_type'    => 'authorization_code',
