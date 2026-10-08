@@ -1,12 +1,14 @@
 <?php
 
 namespace App\Http\Service;
+use App\Http\Repo\LoginRepo;
 use App\Models\AgentVenue;
 use App\Models\AgentWallet;
 use App\Models\AgentWalletLog;
 use App\Models\AlarmVehcle;
 use App\Models\Cuser;
 use App\Models\CuserAgent;
+use App\Models\CuserWallet;
 use App\Models\CuserWalletLog;
 use App\Models\DrivingRecord;
 use App\Models\PersonVehicle;
@@ -1163,33 +1165,71 @@ class PersonVehicleService
     public function bindAppLoginPhone($request)
     {
         $data = [
-            'uid' => $request['uid'] ?? null,
             'phone' => $request['phone'] ?? null,
             'captcha'  => $request['noteVerify'] ?? null,
+            'open_id' => $request['open_id'] ?? null
         ];
+        if(!$data['open_id']){
+            return ReponseData::reponseFormat(2000,'open_id必传');
 
-        $user = Cuser::where('id',$data['uid'])->first();
-        if(!$user){
-            return ReponseData::reponseFormat(2000,'用户不存在');
         }
-        if($data['captcha'] == '666666'){
-            if(isset($data['captcha'])){
-                return ReponseData::reponseFormat(2003,'验证码错误！');
+        $user = Cuser::where('phone_number',$data['phone'])->first();
+        if(!$user){
+            if($data['captcha'] == '666666'){
+//                if(isset($data['captcha'])){
+//                    return ReponseData::reponseFormat(2003,'验证码错误！');
+//                }
+            }else{
+                $code = Redis::get($data['phone']);
+                if(empty($code)){
+                    return ReponseData::reponseFormat(2003,'验证码已过期！');
+                }
+                if($code != $data['captcha']){
+                    return ReponseData::reponseFormat(2000,'验证码错误');
+                }
+                Redis::del($data['phone']);
+
+            }
+            $special_area = CuserAgent::where('superior_agent_id',0)->inRandomOrder()->first();
+            $ip = getIp($request);
+
+            $insertData = [
+                'phone_number' => $data['phone'],
+                'special_area' => $special_area['id'],
+                'special_area_name' => $special_area['agent_name'],
+                'register_time' => time(),
+                'login_ip' => $ip,
+                'head_shot' => 'https://bfyk.oss-cn-hangzhou.aliyuncs.com/yk/image/ZKSJ_1785999958KSGK.jpeg', //默认头像
+                'username' => '八方远控'.mt_rand(10000000,99999999),
+                'show_id' => mt_rand(10000000,99999999),
+                'is_screenshot' => 1,
+            ];
+            $repo =  new LoginRepo();
+            $user = $repo->createUsers($insertData);
+            $loginService = new LoginService();
+            if ($user) {
+                $response = $loginService->registerLogin($user);
+                return ReponseData::reponseData($response);
             }
         }else{
-            $code = Redis::get($data['phone']);
-            if(empty($code)){
-                return ReponseData::reponseFormat(2003,'验证码已过期！');
-            }
-            if($code != $data['captcha']){
-                return ReponseData::reponseFormat(2000,'验证码错误');
-            }
-            Redis::del($data['phone']);
-
+            $nowTime                 = time();
+            $sessionKey              = base64_encode(md5($user['id'].$user['user_name'].$nowTime));
+            $key = 'token_'.$user['id'];
+            Redis::set($key, $sessionKey);
+            $updateData = [
+                'last_online_time' => $nowTime,
+                'session_key' => $sessionKey,
+            ];
+            Cuser::where('id', $user['id'])->update($updateData);
+            $response =  [
+                'id' => $user['id'],
+                'special_area' => $user['special_area'],
+                'session_key' => $sessionKey,
+                'new_user' => 0,
+            ];
+            $responseData = $response;
+            return ReponseData::reponseFormatList(200,'成功',$responseData);
         }
-        $user['phone'] = $data['phone'];
-        $user->save();
-
         return ReponseData::reponseFormat(200,'绑定成功');
     }
 

@@ -1107,8 +1107,7 @@ class LoginService
             ];
 
             $user = $this->repo->createUsers($insertData);
-            $balance = CuserWallet::getBalance($user['id'], $special_area['id']);
-            if ($user && isset($balance)) {
+            if ($user ) {
                 $response = $loginService->registerLogin($user);
                 return ReponseData::reponseData($response);
             }
@@ -1141,6 +1140,76 @@ class LoginService
         ];
         $responseData = $response;
         return ReponseData::reponseFormatList(200,'成功',$responseData);
+    }
+
+    public function appWechatLogin($request)
+    {
+
+//        $phoneCode = $request['phone_code'];
+        $code = $request->post('wechat_code');
+//        $encryptedData = $request->post('encrypted_data');
+//        $iv = $request->post('iv');
+
+        if(empty($code)){
+            return ReponseData::reponseFormat(2000,'code必传');
+        }
+        $appId     = env('WECHATPAY_APPID','');
+        $appSecret = config('WECHATPAY_SECRET','');
+        $loginService = new LoginService();
+        $tokenUrl = "https://api.weixin.qq.com/sns/oauth2/access_token"
+            . "?appid={$appId}"
+            . "&secret={$appSecret}"
+            . "&code={$code}"
+            . "&grant_type=authorization_code";
+
+
+        $tokenResp = Http::get($tokenUrl);
+
+        $tokenData = $tokenResp->json();
+        if (isset($tokenResp['errcode']) && $tokenResp['errcode'] != 0) {
+            Log::error('微信授权失败', ['response' => $tokenData['errmsg']]);
+            return ReponseData::reponseFormat(2000,'微信授权失败：' . ($tokenData['errmsg']));
+        }
+
+
+        $accessToken = $tokenResp['access_token'];
+        $wechatOpenId      = $tokenResp['openid'];
+        $userUrl = "https://api.weixin.qq.com/sns/userinfo"
+            . "?access_token={$accessToken}"
+            . "&openid={$wechatOpenId}";
+        $userResp = Http::get($userUrl);
+        $userData = $userResp->json();
+
+        if (isset($userResp['errcode']) && $userResp['errcode'] != 0) {
+            Log::error('获取微信用户信息失败', ['response' => $userData]);
+            return ReponseData::reponseFormat(2000,'获取微信用户信息失败');
+        }
+        $user = Cuser::where('wechat_app_openid',$wechatOpenId)->first();
+        if(isset($user)) {
+            $nowTime                 = time();
+            $sessionKey              = base64_encode(md5($user['id'].$user['user_name'].$nowTime));
+            $key = 'token_'.$user['id'];
+            Redis::set($key, $sessionKey);
+            $updateData = [
+                'last_online_time' => $nowTime,
+                'session_key' => $sessionKey,
+            ];
+            Cuser::where('id', $user['id'])->update($updateData);
+            $response =  [
+                'id' => $user['id'],
+                'special_area' => $user['special_area'],
+                'session_key' => $sessionKey,
+                'new_user' => 0,
+            ];
+            $responseData = $response;
+            return ReponseData::reponseFormatList(200,'成功',$responseData);
+        }
+
+        $response = [
+            'open_id' => $wechatOpenId,
+        ];
+
+        return ReponseData::reponseFormatList(200,'成功',$response);
     }
 
 }

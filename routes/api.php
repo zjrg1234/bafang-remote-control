@@ -36,6 +36,8 @@ Route::group(['middleware' => 'checkAesEntry'], function () { //所有接口走�
     Route::post('/app/dy/login', [LoginController::class, 'appDyLogin']);
     // APP快手一键登录
     Route::post('/app/wechat/login', [LoginController::class, 'appWechatLogin']);
+    Route::post('/bind/app/phone',[PersonVehicleController::class,'bindAppLoginPhone']);
+
 
     Route::group(['middleware'=>'CheckToken'], function () { //登陆后的接口走token校验
         //代理商端
@@ -160,7 +162,6 @@ Route::group(['middleware' => 'checkAesEntry'], function () { //所有接口走�
             Route::post('/person/update/vehicle', [PersonVehicleController::class, 'updateVehicle']); //车辆编辑
             Route::post('/person/reset/default/channel', [PersonVehicleController::class, 'vehicleDetailReset']); //车辆配置重置
             Route::post('/person/start/driving',[PersonVehicleController::class,'startDriving']); //开始驾驶
-            Route::post('/bind/app/phone',[PersonVehicleController::class,'bindAppLoginPhone']);
             Route::post('/person/refresh/close',[PersonVehicleController::class,'refreshClose']);
 
 

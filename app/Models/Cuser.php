@@ -31,7 +31,8 @@ class Cuser extends Model
         'openid',
         'ks_openid',
         'dy_openid',
-        'ks_app_openid'
+        'ks_app_openid',
+        'wechat_app_openid'
     ];
     protected function serializeDate(\DateTimeInterface $date)
     {

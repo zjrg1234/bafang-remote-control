@@ -122,6 +122,12 @@ class LoginController extends Controller
 
     }
 
+    public function appWechatLogin(Request $request)
+    {
+        return $this->service->appWechatLogin($request);
+
+
+    }
 
     public function udp(Request $request)
     {
