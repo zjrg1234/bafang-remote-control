@@ -1056,10 +1056,10 @@ class LoginService
         $appId     = config('dy.app_id');
         $appSecret = config('dy.app_secret');
         $loginService = new LoginService();
-        $url = 'https://open.douyin.com/oauth/access_token/';
+        $url = 'https://open.douyin.com/oauth/access_token';
 
         $tokenResp = Http::asForm()->post($url, [
-            'client_key'    => $appId,
+            'client_id'    => $appId,
             'client_secret' => $appSecret,
             'code'          => $code,
             'grant_type'    => 'authorization_code',
