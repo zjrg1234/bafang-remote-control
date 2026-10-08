@@ -1057,14 +1057,14 @@ class LoginService
         $appSecret = config('dy.app_secret');
         $loginService = new LoginService();
         $url = 'https://open.douyin.com/oauth/access_token';
-
-        $tokenResp = Http::asForm()->post($url, [
+        $requestBody = [
             'client_id'    => $appId,
             'client_secret' => $appSecret,
             'code'          => $code,
             'grant_type'    => 'authorization_code',
-        ]);
-
+        ];
+        $tokenResp = Http::asForm()->post($url, $requestBody);
+        Log::info("抖音请求body字符串：".json_encode($requestBody));
         $tokenData = $tokenResp->json();
         $data = $tokenData['data'] ?? [];
         if (($data['error_code'] ?? -1) !== 0 || empty($data['access_token'])) {
