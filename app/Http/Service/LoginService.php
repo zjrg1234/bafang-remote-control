@@ -1086,10 +1086,15 @@ class LoginService
         $userRespJson = $userData['data'] ?? [];
 
         if (($userRespJson['error_code'] ?? -1) !== 0) {
-            Log::error('获取抖音用户信息失败', ['response' => $userData]);
-            return ReponseData::reponseFormat(2000,'获取抖音用户信息失败：' . ($userInfo['description'] ?? '未知错误'));
+            Log::error('获取抖音用户信息失败', ['response' => $userRespJson]);
+            return ReponseData::reponseFormat(2000,'获取抖音用户信息失败：' . ($userRespJson['description'] ?? '未知错误'));
         }
-        $mobile = $userInfo['mobile'] ?? null;
+        $mobile = $userRespJson['mobile'] ?? null;
+        if(!$mobile){
+            Log::error('获取抖音用户手机号失败', ['response' => $userRespJson]);
+
+            return ReponseData::reponseFormat(2000,'未拿到对应手机号');
+        }
         $userInfo = $this->repo->getUserByMobile($mobile);
         if(!isset($userInfo)) {
             $special_area = CuserAgent::where('superior_agent_id',0)->inRandomOrder()->first();
