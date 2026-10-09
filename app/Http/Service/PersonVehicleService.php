@@ -658,13 +658,15 @@ class PersonVehicleService
         }
 
         $vehicle = PersonVehicle::where('id', $id)->first();
+
         if(!$vehicle){
             return ReponseData::reponseFormat(2000,'车辆未找到');
         }
-        $reverse_left_right = $request['reverse_left_right'] ?? $vehicle['reverse_left_right'];
-        $reverse_up_down = $request['reverse_up_down'] ?? $vehicle['reverse_up_down'];
-        $reverse_rotation = $request['reverse_rotation'] ?? $vehicle['reverse_rotation'];
-        $change_ui_control = $request['change_ui_control'] ?? $vehicle['change_ui_control'];
+        $vehicleConfigDb = PersonVehicleConfig::where('vehicle_id',$id)->first();
+        $reverse_left_right = $request['reverse_left_right'] ?? $vehicleConfigDb['reverse_left_right'];
+        $reverse_up_down = $request['reverse_up_down'] ?? $vehicleConfigDb['reverse_up_down'];
+        $reverse_rotation = $request['reverse_rotation'] ?? $vehicleConfigDb['reverse_rotation'];
+        $change_ui_control = $request['change_ui_control'] ?? $vehicleConfigDb['change_ui_control'];
         $vehicleConfig = PersonVehicleConfig::where('vehicle_id', $id)->first();
 
         if(!$vehicleConfig){
