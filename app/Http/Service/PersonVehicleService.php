@@ -706,7 +706,7 @@ class PersonVehicleService
         ];
         $vehicleConfig->update($data);
 
-        PersonVehicle::where('id', $id)->update([
+        PersonVehicleConfig::where('vehicle_id', $id)->update([
             'reverse_left_right'=>$reverse_left_right,
             'reverse_up_down'=>$reverse_up_down,
             'reverse_rotation'=>$reverse_rotation,
