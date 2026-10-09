@@ -94,4 +94,10 @@ class PersonVehicleController extends Controller
         return $this->service->queryKey($request);
 
     }
+
+    public function getVehicleBattery(Request $request)
+    {
+        return $this->service->getVehicleBattery($request);
+
+    }
 }

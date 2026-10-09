@@ -195,3 +195,5 @@ Route::post('/transmitter/query/bind',[IndexController::class,'transmitterQueryB
 // 快手一键登录
 // 创建订单（快手平台支付宝）
 // 快手支付异步回调
+
+Route::get('/get/vehicle/battery',[PersonVehicleController::class,'getVehicleBattery']);

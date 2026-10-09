@@ -1289,4 +1289,39 @@ class PersonVehicleService
 
         return ReponseData::reponseFormat(200,'刷新关闭成功');
     }
+
+    public function getVehicleBattery($request)
+    {
+        $data = [
+            'uid' => $request['uid'] ?? null,
+            'vehicle_id' => $request['vehicle_id'] ?? null,
+        ];
+
+        if(!$data['uid']){
+            return ReponseData::reponseFormat(2000,'用户id必传');
+        }
+
+        if(!$data['vehicle_id']){
+            return ReponseData::reponseFormat(2000,'车辆id必传');
+        }
+
+        $vehicle = PersonVehicle::where('id',$data['vehicle_id'])->first();
+
+        if(!$vehicle){
+            return ReponseData::reponseFormat(2000,'未找到该车辆');
+        }
+
+        if($vehicle['vehicle_state'] >= 1){
+            $vehicleState = 1;
+        }else{
+            $vehicleState = 0;
+
+        }
+        $resp = [
+            'vehicle_state' => $vehicleState,
+            'battery' => $vehicle['vehicle_battery'] ?? '0%'
+        ];
+
+        return  ReponseData::reponseFormatList(200,'成功',$resp);
+    }
 }
