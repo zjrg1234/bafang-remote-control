@@ -1205,6 +1205,7 @@ class PersonVehicleService
                 'username' => '八方远控'.mt_rand(10000000,99999999),
                 'show_id' => mt_rand(10000000,99999999),
                 'is_screenshot' => 1,
+                'wechat_app_openid' => $data['open_id'],
             ];
             $repo =  new LoginRepo();
             $user = $repo->createUsers($insertData);
@@ -1221,6 +1222,7 @@ class PersonVehicleService
             $updateData = [
                 'last_online_time' => $nowTime,
                 'session_key' => $sessionKey,
+                'wechat_app_openid' => $data['open_id'],
             ];
             Cuser::where('id', $user['id'])->update($updateData);
             $response =  [
