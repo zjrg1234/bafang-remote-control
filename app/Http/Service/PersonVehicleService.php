@@ -1251,7 +1251,7 @@ class PersonVehicleService
             return ReponseData::reponseFormat(2000,'车辆id必传!');
         }
 
-        $vehicle = Vehicle::where('id',$data['id'])->first();
+        $vehicle = PersonVehicle::where('id',$data['id'])->first();
 
         if(!$vehicle){
             return  ReponseData::reponseFormat(2000,'未找到该车辆');
