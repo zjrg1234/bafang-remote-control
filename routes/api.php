@@ -163,6 +163,7 @@ Route::group(['middleware' => 'checkAesEntry'], function () { //所有接口走�
             Route::post('/person/reset/default/channel', [PersonVehicleController::class, 'vehicleDetailReset']); //车辆配置重置
             Route::post('/person/start/driving',[PersonVehicleController::class,'startDriving']); //开始驾驶
             Route::post('/person/refresh/close',[PersonVehicleController::class,'refreshClose']);
+            Route::get('/person/vehicle/battery',[PersonVehicleController::class,'getVehicleBattery']);
 
 
         });
@@ -196,4 +197,3 @@ Route::post('/transmitter/query/bind',[IndexController::class,'transmitterQueryB
 // 创建订单（快手平台支付宝）
 // 快手支付异步回调
 
-Route::get('/get/vehicle/battery',[PersonVehicleController::class,'getVehicleBattery']);
