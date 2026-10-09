@@ -1159,7 +1159,7 @@ class LoginService
             return ReponseData::reponseFormat(2000,'code必传');
         }
         $appId     = env('WECHATPAY_APPID','');
-        $appSecret = config('WECHATPAY_SECRET','');
+        $appSecret = env('WECHATPAY_SECRET','');
         $loginService = new LoginService();
         $tokenUrl = "https://api.weixin.qq.com/sns/oauth2/access_token"
             . "?appid={$appId}"
