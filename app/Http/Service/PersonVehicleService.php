@@ -169,6 +169,12 @@ class PersonVehicleService
             'rear_camera_type' => 0,
             'operation_mode' => 0,
         ];
+        if($data['camera_type'] == 1){
+            $vehicleConfig['video_definition'] = '2,3,4,5';
+        }else{
+            $vehicleConfig['video_definition'] = '2,3,4';
+
+        }
         $channelConfig = [
             'ch1'=>[
                 'open_value'=>[
