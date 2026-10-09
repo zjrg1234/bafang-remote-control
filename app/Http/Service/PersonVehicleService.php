@@ -1175,10 +1175,15 @@ class PersonVehicleService
         $data = [
             'phone' => $request['phone'] ?? null,
             'captcha'  => $request['noteVerify'] ?? null,
-            'open_id' => $request['open_id'] ?? null
+            'open_id' => $request['open_id'] ?? null,
+            'type' =>$request['type'] ?? null,
         ];
         if(!$data['open_id']){
             return ReponseData::reponseFormat(2000,'open_id必传');
+
+        }
+        if(!$data['type']){
+            return ReponseData::reponseFormat(2000,'平台必传');
 
         }
         $user = Cuser::where('phone_number',$data['phone'])->first();
@@ -1211,8 +1216,12 @@ class PersonVehicleService
                 'username' => '八方远控'.mt_rand(10000000,99999999),
                 'show_id' => mt_rand(10000000,99999999),
                 'is_screenshot' => 1,
-                'wechat_app_openid' => $data['open_id'],
             ];
+            if($data['type'] == 1){
+                $insertData['wechat_app_openid'] = $data['open_id'];
+            }else{
+                $insertData['dy_openid'] = $data['open_id'];
+            }
             $repo =  new LoginRepo();
             $user = $repo->createUsers($insertData);
             $loginService = new LoginService();
