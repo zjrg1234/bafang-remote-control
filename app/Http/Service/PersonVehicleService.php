@@ -1237,8 +1237,13 @@ class PersonVehicleService
             $updateData = [
                 'last_online_time' => $nowTime,
                 'session_key' => $sessionKey,
-                'wechat_app_openid' => $data['open_id'],
+
             ];
+            if($data['type'] == 1){
+                $updateData['wechat_app_openid'] = $data['open_id'];
+            }else{
+                $updateData['dy_openid'] = $data['open_id'];
+            }
             Cuser::where('id', $user['id'])->update($updateData);
             $response =  [
                 'id' => $user['id'],
