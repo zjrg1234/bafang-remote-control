@@ -12,6 +12,8 @@ use App\Models\CuserAgent;
 use App\Models\CuserWallet;
 use App\Models\CuserWalletLog;
 use App\Models\DrivingRecord;
+use App\Models\PersonVehicle;
+use App\Models\PersonVehicleConfig;
 use App\Models\ReponseData;
 use App\Models\Vehicle;
 use App\Models\VehicleConfig;
@@ -383,11 +385,22 @@ class AgentService
             return ReponseData::reponseFormat(2000,'id必传!');
         }
         $vehicle = Vehicle::where('id', $id)->first();
+        $type = 1;
         if(!$vehicle){
-            return ReponseData::reponseFormat(2001,'未找到该车辆!');
+            $vehicle = PersonVehicle::where('id', $id)->first();
+            if(!$vehicle){
+                return ReponseData::reponseFormat(2001,'未找到该车辆!');
+            }
+            $type = 2;
         }
         $vehicleConfig = VehicleConfig::where('vehicle_id', $id)->first();
         if(!$vehicleConfig){
+            if($type == 2){
+                $vehicleConfig = PersonVehicleConfig::where('vehicle_id', $id)->first();
+                if(!$vehicleConfig){
+                    return ReponseData::reponseFormat(2001,'未找到该车辆配置!');
+                }
+            }
             return ReponseData::reponseFormat(2001,'未找到该车辆配置!');
         }
         $agent = CuserAgent::where('id', $vehicle['agent_id'])->first();

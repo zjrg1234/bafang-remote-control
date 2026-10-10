@@ -116,6 +116,7 @@ class WarZoneService
             'receiver_id',
             'vehicle_state',
             'top_speed',
+            'vehicle_battery',
             DB::raw("'vehicle' as source_table") // 注入一个虚拟字段，标记数据来源
         );
         $applyFilters($queryA);
@@ -132,6 +133,7 @@ class WarZoneService
             'receiver_id',
             'vehicle_state',
             'top_speed',
+            'vehicle_battery',
             DB::raw("'person_vehicle' as source_table") // 标记来源于个人车辆
         );
         $applyFilters($queryB);
