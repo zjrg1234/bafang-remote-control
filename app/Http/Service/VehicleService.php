@@ -13,6 +13,7 @@ use App\Models\CuserAgent;
 use App\Models\CuserWallet;
 use App\Models\CuserWalletLog;
 use App\Models\DrivingRecord;
+use App\Models\PersonVehicle;
 use App\Models\ReponseData;
 use App\Models\Vehicle;
 use App\Models\VehicleConfig;
@@ -1518,18 +1519,29 @@ class VehicleService
     public function updateVehicleBattery($request)
     {
         $vehicle_id =  $request['vehicle_id'] ?? null;
-
+        $type = $request['type'] ?? 1;
         if(!$vehicle_id){
             return ReponseData::reponseFormat(2000,'车辆id必须传');
         }
 
-        $vehicle = Vehicle::where('id',$vehicle_id)->first();
-        if(!$vehicle){
-            return ReponseData::reponseFormat(2000,'未找到该车辆');
+        if($type == 1){
+            $vehicle = Vehicle::where('id',$vehicle_id)->first();
+            if(!$vehicle){
+                return ReponseData::reponseFormat(2000,'未找到该车辆');
+            }
+
+            $vehicle_battery= $request['vehicle_battery'] ?? $vehicle['vehicle_battery'];
+            $vehicle->update(['vehicle_battery'=>$vehicle_battery]);
+        }else{
+            $vehicle = PersonVehicle::where('id',$vehicle_id)->first();
+            if(!$vehicle){
+                return ReponseData::reponseFormat(2000,'未找到该车辆');
+            }
+
+            $vehicle_battery= $request['vehicle_battery'] ?? $vehicle['vehicle_battery'];
+            $vehicle->update(['vehicle_battery'=>$vehicle_battery]);
         }
 
-        $vehicle_battery= $request['vehicle_battery'] ?? $vehicle['vehicle_battery'];
-        $vehicle->update(['vehicle_battery'=>$vehicle_battery]);
 
         return ReponseData::reponseFormat(200,'更新成功');
     }

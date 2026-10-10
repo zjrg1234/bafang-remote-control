@@ -124,6 +124,7 @@ class PersonVehicleService
             return ReponseData::reponseFormat(2000,'接收机id必填!');
         }
 
+
         if(!$data['vehicle_image']){
             if($data['vehicle_type'] < 20){
                 $vehicle_image = VehicleImage::where('type',1)->where('status',1)->value('image');
@@ -597,7 +598,10 @@ class PersonVehicleService
         if($exists){
             return ReponseData::reponseFormat(2000,'接收机重复!');
         }
-
+        $vExists = Vehicle::where('receiver_id',$data['receiver_id'])->first();
+        if($vExists){
+            return ReponseData::reponseFormat(2000,'接收机重复!');
+        }
         $data['app_transmitter_id'] = mt_rand(50000000,59999999);
 
         $vehicle = PersonVehicle::create($data);
