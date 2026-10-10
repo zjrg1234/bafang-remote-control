@@ -164,7 +164,7 @@ Route::group(['middleware' => 'checkAesEntry'], function () { //所有接口走�
             Route::post('/person/start/driving',[PersonVehicleController::class,'startDriving']); //开始驾驶
             Route::post('/person/refresh/close',[PersonVehicleController::class,'refreshClose']);
             Route::post('/person/vehicle/battery',[PersonVehicleController::class,'getVehicleBattery']);
-            Route::post('/switch/remote/control',[PersonVehicleController::class,'switchRemoteControl']);
+            Route::post('/person/switch/remote/control',[PersonVehicleController::class,'switchRemoteControl']);
 
 
         });
