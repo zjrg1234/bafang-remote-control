@@ -645,6 +645,7 @@ class PersonVehicleService
         $vehicleConfig['app_transmitter_id'] = $vehicle['app_transmitter_id'];
         $vehicleConfig['vehicle_introduction'] = $vehicle['vehicle_introduction'];
         $vehicleConfig['vehicle_sorting'] = $vehicle['vehicle_sorting'];
+        $vehicleConfig['default_control']  = $vehicle['default_control'];
 
         $vehicleConfig['content_url'] = env('CONTENT_URL','xhzzf.huazyk.cn') ;
         $vehicleConfig['content_url_port'] = env('CONTENT_URL_PORT','8899') ;
@@ -1359,9 +1360,11 @@ class PersonVehicleService
             }
             Redis::set($vehicle['transmitter_id'],$vehicle['receiver_id']); //绑定遥控器接收机、发射机id
             Redis::del($vehicle['app_transmitter_id']); //解绑app接收机、发射机id
+            $vehicle->update(['default_control' => 2]);
         }else{
             Redis::set($vehicle['app_transmitter_id'],$vehicle['receiver_id']); //绑定遥控器接收机、发射机id
             Redis::del($vehicle['transmitter_id']); //解绑app接收机、发射机id
+            $vehicle->update(['default_control' => 1]);
         }
 
 
