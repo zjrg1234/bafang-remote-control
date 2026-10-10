@@ -56,9 +56,6 @@ class PersonVehicleService
         $list = PersonVehicle::select('*')
             ->where('uid',$data['uid'])
             ->get();
-        foreach ($list as $v){
-            $v['app_transmitter_id'] = $v['transmitter_id'];
-        }
         return ReponseData::reponseFormatList(200,'获取成功',$list);
 
     }
@@ -601,6 +598,7 @@ class PersonVehicleService
             return ReponseData::reponseFormat(2000,'接收机重复!');
         }
         $data['transmitter_id'] = mt_rand(40000000,49999999);
+        $data['app_transmitter_id'] = mt_rand(50000000,59999999);
 
         $vehicle = PersonVehicle::create($data);
         $vehicleConfig['vehicle_id'] = $vehicle['id'];
@@ -640,7 +638,7 @@ class PersonVehicleService
         $vehicleConfig['transmitter_id'] = $vehicle['transmitter_id'];
         $vehicleConfig['receiver_id'] = $vehicle['receiver_id'];
         $vehicleConfig['vehicle_config_detail'] = json_decode($vehicleConfig['vehicle_config_detail']);
-        $vehicleConfig['app_transmitter_id'] = $vehicle['transmitter_id'];
+        $vehicleConfig['app_transmitter_id'] = $vehicle['app_transmitter_id'];
         $vehicleConfig['vehicle_introduction'] = $vehicle['vehicle_introduction'];
         $vehicleConfig['vehicle_sorting'] = $vehicle['vehicle_sorting'];
 
@@ -1147,7 +1145,9 @@ class PersonVehicleService
             Redis::setex($key,35,'start');
             $message = '继续驾驶成功';
         }elseif($data['type'] == 3){
-            Redis::del($data['transmitter_id']); //绑定车辆接收机、发射机id
+            Redis::del($data['transmitter_id']); //解绑遥控器接收机、发射机id
+            Redis::del($data['app_transmitter_id']); //解绑app接收机、发射机id
+
             $receiverJson = Redis::get($data['receiver_id'].'_receiver');
             $receiverJson = json_decode($receiverJson,true);
             $receiverJson['transmitter_id'] = '0';
@@ -1323,5 +1323,41 @@ class PersonVehicleService
         ];
 
         return  ReponseData::reponseFormatList(200,'成功',$resp);
+    }
+
+    public function switchRemoteControl($request)
+    {
+        $data = [
+            'uid' => $request['uid'] ?? null,
+            'vehicle_id' => $request['vehicle_id'] ?? null,
+            'type' => $request['type'] ?? null
+        ];
+
+        if(!$data['uid']){
+            return ReponseData::reponseFormat(2000,'用户id必传');
+        }
+        if(!$data['type']){
+            return ReponseData::reponseFormat(2000,'状态必传');
+        }
+        if(!$data['vehicle_id']){
+            return ReponseData::reponseFormat(2000,'车辆id必传');
+        }
+
+        $vehicle = PersonVehicle::where('id',$data['vehicle_id'])->first();
+
+        if(!$vehicle){
+            return ReponseData::reponseFormat(2000,'未找到该车辆');
+        }
+
+        if($data['type'] == 2){
+            Redis::set($vehicle['transmitter_id'],$vehicle['receiver_id']); //绑定遥控器接收机、发射机id
+            Redis::del($vehicle['app_transmitter_id']); //解绑app接收机、发射机id
+        }else{
+            Redis::set($vehicle['app_transmitter_id'],$vehicle['receiver_id']); //绑定遥控器接收机、发射机id
+            Redis::del($vehicle['transmitter_id']); //解绑app接收机、发射机id
+        }
+
+
+        return ReponseData::reponseFormat(200,'更换成功');
     }
 }

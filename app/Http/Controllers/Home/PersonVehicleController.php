@@ -100,4 +100,10 @@ class PersonVehicleController extends Controller
         return $this->service->getVehicleBattery($request);
 
     }
+
+    public function switchRemoteControl(Request $request)
+    {
+        return $this->service->switchRemoteControl($request);
+
+    }
 }
