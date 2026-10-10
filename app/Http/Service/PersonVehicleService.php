@@ -597,7 +597,7 @@ class PersonVehicleService
         if($exists){
             return ReponseData::reponseFormat(2000,'接收机重复!');
         }
-        $data['transmitter_id'] = mt_rand(40000000,49999999);
+
         $data['app_transmitter_id'] = mt_rand(50000000,59999999);
 
         $vehicle = PersonVehicle::create($data);
@@ -1350,6 +1350,9 @@ class PersonVehicleService
         }
 
         if($data['type'] == 2){
+            if($vehicle['transmitter_id'] == ''){
+                return ReponseData::reponseFormat(2000,'遥控器发射机id必填');
+            }
             Redis::set($vehicle['transmitter_id'],$vehicle['receiver_id']); //绑定遥控器接收机、发射机id
             Redis::del($vehicle['app_transmitter_id']); //解绑app接收机、发射机id
         }else{
