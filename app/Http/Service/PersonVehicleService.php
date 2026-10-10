@@ -127,9 +127,9 @@ class PersonVehicleService
 
         if(!$data['vehicle_image']){
             if($data['vehicle_type'] < 20){
-                $vehicle_image = VehicleImage::where('type',1)->where('status',1)->value('image');
+                $vehicle_image = VehicleImage::where('type',1)->where('status',1)->inRandomOrder()->value('image');
             }elseif ($data['vehicle_type'] >=20 && $data['vehicle_type'] <= 30) {
-                $vehicle_image = VehicleImage::where('type',3)->where('status',1)->value('image');
+                $vehicle_image = VehicleImage::where('type',3)->where('status',1)->inRandomOrder()->value('image');
             }else{
                 $vehicle_image = '';
             }
@@ -764,6 +764,14 @@ class PersonVehicleService
         }
         if(!$data['vehicle_type']){
             return ReponseData::reponseFormat(2000,'车辆类型必填!');
+        }
+        $vExists = Vehicle::where('receiver_id',$data['receiver_id'])->first();
+        if($vExists){
+            return ReponseData::reponseFormat(2000,'接收机重复!');
+        }
+        $Exists = PersonVehicle::where('receiver_id',$data['receiver_id'])->where('id','!=',$vehicle['id'])->first();
+        if($Exists){
+            return ReponseData::reponseFormat(2000,'接收机重复!');
         }
         if($vehicle['vehicle_type'] != $data['vehicle_type']){
             $vehicleConfig = [
