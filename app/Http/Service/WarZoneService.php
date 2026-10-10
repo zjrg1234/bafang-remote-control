@@ -3,6 +3,7 @@
 namespace App\Http\Service;
 
 use App\Models\CuserAgent;
+use App\Models\PersonVehicle;
 use App\Models\ReponseData;
 use App\Models\Vehicle;
 use Illuminate\Support\Facades\DB;
