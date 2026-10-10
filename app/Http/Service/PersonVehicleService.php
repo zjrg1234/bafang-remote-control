@@ -1158,7 +1158,10 @@ class PersonVehicleService
             Redis::setex($key,35,'start');
             $message = '继续驾驶成功';
         }elseif($data['type'] == 3){
-            Redis::del($data['transmitter_id']); //解绑遥控器接收机、发射机id
+            if($vehicle['default_control'] != 2) {
+                Redis::del($data['transmitter_id']); //解绑遥控器接收机、发射机id
+            }
+
             Redis::del($vehicle['app_transmitter_id']); //解绑app接收机、发射机id
 
             $receiverJson = Redis::get($data['receiver_id'].'_receiver');
