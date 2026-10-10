@@ -1146,7 +1146,7 @@ class PersonVehicleService
             $message = '继续驾驶成功';
         }elseif($data['type'] == 3){
             Redis::del($data['transmitter_id']); //解绑遥控器接收机、发射机id
-            Redis::del($data['app_transmitter_id']); //解绑app接收机、发射机id
+            Redis::del($vehicle['app_transmitter_id']); //解绑app接收机、发射机id
 
             $receiverJson = Redis::get($data['receiver_id'].'_receiver');
             $receiverJson = json_decode($receiverJson,true);
