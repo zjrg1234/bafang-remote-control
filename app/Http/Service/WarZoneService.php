@@ -73,7 +73,7 @@ class WarZoneService
             'name'           => $request['name'] ?? null,
             'vehicle_state'  => $request['vehicle_state'] ?? null,
             'receiver_name'  => $request['receiver_name'] ?? null,
-            'transmitter_id' => $request['transmitter_id'] ?? null,
+            'transmitter_id' => $request['app_transmitter_id'] ?? null,
             'binding_state'  => $request['binding_state'] ?? null,
         ];
 
