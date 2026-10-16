@@ -263,9 +263,11 @@ class VehicleService
 //        }
         if(!$data['vehicle_image']){
             if($data['vehicle_type'] < 20){
-                $vehicle_image = VehicleImage::where('type',1)->where('status',1)->value('image');
+                $image = VehicleImage::where('type',1)->where('status',1)->inRandomOrder()->first();
+                $vehicle_image = $image['image'];
             }elseif ($data['vehicle_type'] >=20 && $data['vehicle_type'] <= 30) {
-                $vehicle_image = VehicleImage::where('type',3)->where('status',1)->value('image');
+                $image = VehicleImage::where('type',3)->where('status',1)->inRandomOrder()->first();
+                $vehicle_image = $image['image'];
             }else{
                 $vehicle_image = '';
             }
