@@ -621,12 +621,20 @@ class AgentService
     public function delete($request)
     {
         $id = $request['id'] ?? null;
+        $receiver_id = $request['receiver_id'] ?? null;
         if(!$id){
             return ReponseData::reponseFormat(2000,'id必须传');
         }
-        $vehicle = Vehicle::where('id', $id)->first();
+        if(!$receiver_id){
+            return ReponseData::reponseFormat(2000,'接收机id必须传');
+
+        }
+        $vehicle = Vehicle::where('id', $id)->where('receiver_id',$receiver_id)->first();
         if(!$vehicle){
-            return ReponseData::reponseFormat(2001,'未找到该车辆');
+            $vehicle = PersonVehicle::where('id', $id)->where('receiver_id',$receiver_id)->first();
+            if(!$vehicle){
+                return ReponseData::reponseFormat(2001,'未找到该车辆');
+            }
         }
         $vehicle->delete();
 
