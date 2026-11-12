@@ -18,7 +18,9 @@ class AdminUser extends Authenticatable implements JWTSubject, AuthenticatableCo
         'type',
         'secret',
         'association_id',
-        'member_id'
+        'member_id',
+        'level',
+        'agent_id'
     ];
 
     protected function serializeDate(\DateTimeInterface $date)
