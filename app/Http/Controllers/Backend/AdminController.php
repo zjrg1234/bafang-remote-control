@@ -72,6 +72,7 @@ class AdminController extends Controller
             'uid'=>$user['id'],
             'username'=>$user['username'],
             'token'=> $token,
+            'level' => $user['level']
         ];
 
         return ReponseData::reponseFormatList(200,'登录成功',$resp);
