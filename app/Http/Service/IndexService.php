@@ -57,6 +57,7 @@ class IndexService{
         $uid = $request['uid'] ?? null;
         $type = $request['type'] ?? 0;
         $labels_id = $request['labels_id'] ?? 0;
+        $admin_id = $request['admin_id'] ?? 0;
         if(!$uid){
             return ReponseData::reponseFormat(2000,'用户id必传!');
         }

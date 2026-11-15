@@ -33,6 +33,14 @@ class AdminController extends Controller
             return ReponseData::reponseFormat(2001,'未找到该登录用户！');
         }
 
+//        if($user['level'] == 2){
+//            $resp = [
+//                'uid'=>$user['id'],
+//                'username'=>$user['username'],
+//                'token'=> $token,
+//                'level' => $user['level']
+//            ];
+//        }
 
         //方式一
 //        $token = JWTAuth::fromUser($login);
