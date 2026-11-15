@@ -40,7 +40,6 @@ class KsService
         $loginService = new LoginService();
         $url = "https://open.kuaishou.com/oauth2/mp/code2session";
 
-        // 快手 code2session 接口
         $resp = Http::asForm()->post($url, [
             'app_id'     => $ksId,
             'app_secret' => $ksSecret,
@@ -54,7 +53,6 @@ class KsService
 
         $ksOpenid = $result['open_id'];
         $sessionKey = $result['session_key'];
-        // 如果前端传了加密参数，直接在登录接口解密手机号
         if (!empty($encryptedData) && !empty($iv)) {
             $phoneEncode = $this->aes128CbcDecrypt($sessionKey, $encryptedData, $iv);
             if ($phoneEncode) {

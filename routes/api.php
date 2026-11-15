@@ -23,15 +23,15 @@ use \App\Http\Controllers\Home\PersonVehicleController;
 |
 */
 
-Route::group(['middleware' => 'checkAesEntry'], function () { //所有接口走加解密
-    Route::post('/login/loginIn', [LoginController::class, 'login']);//前台登陆
-    Route::post('/login/save', [LoginController::class, 'register']);//前台注册
-    Route::post('/get/login/code', [LoginController::class, 'getLoginCode']);//获取验证码
+Route::group(['middleware' => 'checkAesEntry'], function () {
+    Route::post('/login/loginIn', [LoginController::class, 'login']);
+    Route::post('/login/save', [LoginController::class, 'register']);
+    Route::post('/get/login/code', [LoginController::class, 'getLoginCode']);
     Route::post('/one/key/login', [LoginController::class, 'oneKeyLogin']);
     Route::post('/app/version', [IndexController::class, 'appVersion']);
     Route::post('/user/app/version', [IndexController::class, 'appVersion']);
-    Route::post('/wechat/applet/login', [LoginController::class, 'wechatAppletLogin']); //微信小程序登陆
-    Route::post('/ks/applet/login', [LoginController::class, 'ksLogin']);//快手小程序登陆
+    Route::post('/wechat/applet/login', [LoginController::class, 'wechatAppletLogin']);
+    Route::post('/ks/applet/login', [LoginController::class, 'ksLogin']);
     // APP抖音一键登录
     Route::post('/app/dy/login', [LoginController::class, 'appDyLogin']);
     // APP快手一键登录
@@ -39,129 +39,129 @@ Route::group(['middleware' => 'checkAesEntry'], function () { //所有接口走�
     Route::post('/bind/app/phone',[PersonVehicleController::class,'bindAppLoginPhone']);
 
 
-    Route::group(['middleware'=>'CheckToken'], function () { //登陆后的接口走token校验
+    Route::group(['middleware'=>'CheckToken'], function () {
         //代理商端
-        Route::post('/login/logout', [LoginController::class, 'logout']);//前台退出
-        Route::post('/startup/page', [IndexController::class, 'startupPage']); //用户端启动页
+        Route::post('/login/logout', [LoginController::class, 'logout']);
+        Route::post('/startup/page', [IndexController::class, 'startupPage']);
         Route::post('/notice', [NoticeController::class, 'notice']);
 
 
         //代理->前台->车辆管理页面
-        Route::post('/vehicle/list', [VehicleController::class, 'vehicleList']);//车辆列表
-        Route::post('/delete/vehicle', [VehicleController::class, 'deleteVehicle']);//删除车辆
-        Route::post('/binding/venue', [VehicleController::class, 'bindingVenue']);//车辆绑定场地
-        Route::post('/down/vehicle', [VehicleController::class, 'downVehicle']);//车辆下架
-//        Route::post('/unbinding/venue', [VehicleController::class, 'unBindingVenue']);//车辆解绑场地
-        Route::post('/add/vehicle', [VehicleController::class, 'addVehicle']); //添加车辆
-        Route::post('/vehicle/detail', [VehicleController::class, 'vehicleDetail']); //车辆详情
-        Route::post('/vehicle/detail/save', [VehicleController::class, 'vehicleDetailSave']); //车辆保存
-        Route::post('/update/vehicle', [VehicleController::class, 'updateVehicle']); //车辆编辑
-        Route::post('/reset/default/channel', [VehicleController::class, 'vehicleDetailReset']); //车辆配置重置
+        Route::post('/vehicle/list', [VehicleController::class, 'vehicleList']);
+        Route::post('/delete/vehicle', [VehicleController::class, 'deleteVehicle']);
+        Route::post('/binding/venue', [VehicleController::class, 'bindingVenue']);
+        Route::post('/down/vehicle', [VehicleController::class, 'downVehicle']);
+//        Route::post('/unbinding/venue', [VehicleController::class, 'unBindingVenue']);
+        Route::post('/add/vehicle', [VehicleController::class, 'addVehicle']);
+        Route::post('/vehicle/detail', [VehicleController::class, 'vehicleDetail']);
+        Route::post('/vehicle/detail/save', [VehicleController::class, 'vehicleDetailSave']);
+        Route::post('/update/vehicle', [VehicleController::class, 'updateVehicle']);
+        Route::post('/reset/default/channel', [VehicleController::class, 'vehicleDetailReset']);
 
         //代理->前台->车辆告警页面
-        Route::post('/processing/alarm', [VehicleController::class, 'processingAlarm']); //处理完成
-        Route::post('/processing/alarm/list', [VehicleController::class, 'processingAlarmList']); //告警列表
-        Route::post('/processing/alarm/delete', [VehicleController::class, 'processingAlarmDelete']); //处理完成
+        Route::post('/processing/alarm', [VehicleController::class, 'processingAlarm']);
+        Route::post('/processing/alarm/list', [VehicleController::class, 'processingAlarmList']);
+        Route::post('/processing/alarm/delete', [VehicleController::class, 'processingAlarmDelete']);
 
         //代理->前台->我的
-        Route::post('/agent/mine', [AgentController::class, 'agentMine']); //我的
-        Route::post('/set/agent/wallet/password', [AgentController::class, 'setAgentWalletPassword']); //设置钱包密码
-        Route::post('/check/agent/wallet/password', [AgentController::class, 'checkAgentWalletPassword']); //验证密码
+        Route::post('/agent/mine', [AgentController::class, 'agentMine']);
+        Route::post('/set/agent/wallet/password', [AgentController::class, 'setAgentWalletPassword']);
+        Route::post('/check/agent/wallet/password', [AgentController::class, 'checkAgentWalletPassword']);
 
-        Route::post('/agent/driving/record', [AgentController::class, 'agentDrivingRecord']);//我的-驾驶记录
-        Route::post('/agent/driving', [AgentController::class, 'agentDriving']);//我的-正在驾驶
-        Route::post('/agent/change/password', [LoginController::class, 'agentChangePassword']);//代理前台-设置-修改密码
-        Route::post('/agent/wallet/log', [AgentController::class, 'agentWalletLog']);//代理前台-钱包
+        Route::post('/agent/driving/record', [AgentController::class, 'agentDrivingRecord']);
+        Route::post('/agent/driving', [AgentController::class, 'agentDriving']);
+        Route::post('/agent/change/password', [LoginController::class, 'agentChangePassword']);
+        Route::post('/agent/wallet/log', [AgentController::class, 'agentWalletLog']);
 
         //提现晚点做
-        Route::post('/agent/withdraw', [AgentController::class, 'agentWithdraw']);//代理商提现
-        Route::post('/agent/withdraw/record', [AgentController::class, 'agentWithdrawLog']);//代理商提现
-        Route::post('/agent/change/name', [IndexController::class, 'agentChangeName']);//用户前台-设置-修改手机号
+        Route::post('/agent/withdraw', [AgentController::class, 'agentWithdraw']);
+        Route::post('/agent/withdraw/record', [AgentController::class, 'agentWithdrawLog']);
+        Route::post('/agent/change/name', [IndexController::class, 'agentChangeName']);
 
 
         //代理->前台->我的场地
-        Route::post('/venue/list', [VenueController::class, 'venueList']);//场地列表
-        Route::post('/create/venue', [VenueController::class, 'createVenue']);//场地新增
-        Route::post('/venue/detail', [VenueController::class, 'venueDetail']);//场地详情
-        Route::post('/update/venue', [VenueController::class, 'updateVenue']);//场地编辑
+        Route::post('/venue/list', [VenueController::class, 'venueList']);
+        Route::post('/create/venue', [VenueController::class, 'createVenue']);
+        Route::post('/venue/detail', [VenueController::class, 'venueDetail']);
+        Route::post('/update/venue', [VenueController::class, 'updateVenue']);
         Route::post('/venue/business',[VenueController::class, 'venueBusiness']);
-        Route::post('/venue/count', [VenueController::class, 'venueCount']); //车辆统计
-        Route::post('/delete/venue', [VenueController::class, 'venueDelete']); //车辆编辑
-        Route::post('/chack/start/driving', [IndexController::class, 'chackStartDriving']); //查询预约
+        Route::post('/venue/count', [VenueController::class, 'venueCount']);
+        Route::post('/delete/venue', [VenueController::class, 'venueDelete']);
+        Route::post('/chack/start/driving', [IndexController::class, 'chackStartDriving']);
 
 
-        Route::post('/start/driving',[IndexController::class,'startDriving']); //开始驾驶
-        Route::post('/v2/start/driving',[IndexController::class,'startDriving']); //开始驾驶v2
+        Route::post('/start/driving',[IndexController::class,'startDriving']);
+        Route::post('/v2/start/driving',[IndexController::class,'startDriving']);
 
         Route::post('/update/vehicle/battery',[VehicleController::class,'updateVehicleBattery']);
 
-        Route::post('/agent/change/head/shot', [LoginController::class, 'changeHeadShot']);//代理商-设置-修改头像
+        Route::post('/agent/change/head/shot', [LoginController::class, 'changeHeadShot']);
 
         //用户R
         Route::prefix('user')->group(function () {
-            Route::post('/start/driving',[IndexController::class,'startDriving']); //开始驾驶
-            Route::post('/lock/driving',[IndexController::class,'lockDriving']); //开始驾驶
-            Route::post('/v2/start/driving',[IndexController::class,'startDriving']); //开始驾驶v2
+            Route::post('/start/driving',[IndexController::class,'startDriving']);
+            Route::post('/lock/driving',[IndexController::class,'lockDriving']);
+            Route::post('/v2/start/driving',[IndexController::class,'startDriving']);
 
-            Route::post('/reservation', [IndexController::class, 'reservation']); //预约
-            Route::post('/v2/reservation', [IndexController::class, 'reservation']); //预约
+            Route::post('/reservation', [IndexController::class, 'reservation']);
+            Route::post('/v2/reservation', [IndexController::class, 'reservation']);
 
-            Route::post('/chack/unusual/reservation', [IndexController::class, 'chackUnusualReservation']); //查询预约
-            Route::post('/chack/start/driving', [IndexController::class, 'chackStartDriving']); //查询状态
+            Route::post('/chack/unusual/reservation', [IndexController::class, 'chackUnusualReservation']);
+            Route::post('/chack/start/driving', [IndexController::class, 'chackStartDriving']);
 
-            Route::post('/cancel/reservation', [IndexController::class, 'cancelReservation']); //预约
+            Route::post('/cancel/reservation', [IndexController::class, 'cancelReservation']);
 
-            Route::post('/login/logout', [LoginController::class, 'logout']);//前台退出
-            Route::post('/index', [IndexController::class, 'index']);//首页
-            Route::post('/get/title', [IndexController::class, 'getTitle']);//首页
-//            Route::post('/start/driving',[UserController::class,'startDriving']); //开始驾驶/**/
-            Route::post('/venue/detail', [IndexController::class, 'venueDetail']); //场地详情
+            Route::post('/login/logout', [LoginController::class, 'logout']);
+            Route::post('/index', [IndexController::class, 'index']);
+            Route::post('/get/title', [IndexController::class, 'getTitle']);
+//            Route::post('/start/driving',[UserController::class,'startDriving']);
+            Route::post('/venue/detail', [IndexController::class, 'venueDetail']);
             Route::post('/driving/protocol',[IndexController::class, 'drivingProtocol']);
             Route::post('/check/vehicle/status', [IndexController::class, 'checkVehicleStatus']);
 
 //            Route::post('/driving/protocol',[IndexController::class, 'drivingProtocol']);
-            Route::post('/mine', [IndexController::class, 'mine']); //我的
-            Route::post('/change/special', [IndexController::class, 'changeSpecial']);//变更专区
+            Route::post('/mine', [IndexController::class, 'mine']);
+            Route::post('/change/special', [IndexController::class, 'changeSpecial']);
             Route::post('/special/list', [IndexController::class, 'specialList']);
-            Route::post('/reservation/list', [IndexController::class, 'reservationList']); //预约记录
-            Route::post('/complain/list', [IndexController::class, 'complainList']); //申诉记录
-            Route::post('/driving/record', [IndexController::class, 'drivingRecord']); //驾驶记录
+            Route::post('/reservation/list', [IndexController::class, 'reservationList']);
+            Route::post('/complain/list', [IndexController::class, 'complainList']);
+            Route::post('/driving/record', [IndexController::class, 'drivingRecord']);
             Route::post('/wallet/list', [IndexController::class, 'walletList']);
-            Route::post('/change/name', [IndexController::class, 'changeName']);//用户前台-设置-修改手机号
-            Route::post('/account/cancel', [IndexController::class, 'accountCancel']);//用户前台-设置-注销
-            Route::post('/vehicle/detail', [VehicleController::class, 'vehicleDetail']); //车辆详情
+            Route::post('/change/name', [IndexController::class, 'changeName']);
+            Route::post('/account/cancel', [IndexController::class, 'accountCancel']);
+            Route::post('/vehicle/detail', [VehicleController::class, 'vehicleDetail']);
 
-            Route::post('/wechat/deposit', [IndexController::class, 'wechatDeposit']); //微信支付
-            Route::post('/alipay/deposit', [IndexController::class, 'alipayDeposit']); //阿里
-            Route::post('/wechat/jsapi/deposit', [IndexController::class, 'wechatJsapiDeposit']); //微信小程序支付
-            Route::post('/ks/deposit', [IndexController::class, 'ksDeposit']); //快手支付宝支付
-            Route::post('/change/password', [LoginController::class, 'changePassword']);//用户前台-设置-修改密码
-            Route::post('/change/phone', [LoginController::class, 'changePhone']);//用户前台-设置-修改手机号
-            Route::post('/change/head/shot', [LoginController::class, 'changeHeadShot']);//用户前台-设置-修改头像
+            Route::post('/wechat/deposit', [IndexController::class, 'wechatDeposit']);
+            Route::post('/alipay/deposit', [IndexController::class, 'alipayDeposit']);
+            Route::post('/wechat/jsapi/deposit', [IndexController::class, 'wechatJsapiDeposit']);
+            Route::post('/ks/deposit', [IndexController::class, 'ksDeposit']);
+            Route::post('/change/password', [LoginController::class, 'changePassword']);
+            Route::post('/change/phone', [LoginController::class, 'changePhone']);
+            Route::post('/change/head/shot', [LoginController::class, 'changeHeadShot']);
 
-            Route::post('/feedback', [IndexController::class, 'feedBack']);//用户前台-设置-意见
-            Route::post('/deactivate', [IndexController::class, 'deactivate']);//用户前台-设置-注销
-            Route::post('/complain', [IndexController::class, 'complain']);//用户前台-设置-申诉
+            Route::post('/feedback', [IndexController::class, 'feedBack']);
+            Route::post('/deactivate', [IndexController::class, 'deactivate']);
+            Route::post('/complain', [IndexController::class, 'complain']);
             Route::post('/deposit/list', [IndexController::class, 'depositList']);
             Route::post('/deposit/activity/list', [IndexController::class, 'depositActivityList']);
             Route::post('/banner/', [IndexController::class, 'Banner']);
 
             //报修
-            Route::post('/processing/alarm/create', [VehicleController::class, 'processingAlarmCreate']); //上报告警
+            Route::post('/processing/alarm/create', [VehicleController::class, 'processingAlarmCreate']);
 
             Route::post('/notice', [NoticeController::class, 'notice']);
             Route::post('/common/problem', [NoticeController::class, 'problemList']);
             Route::post('/activity/notice', [NoticeController::class, 'activityNotice']);
 
             //个人
-            Route::post('/person/vehicle/list', [PersonVehicleController::class, 'vehicleList']);//车辆列表
-            Route::post('/person/delete/vehicle', [PersonVehicleController::class, 'deleteVehicle']);//解绑车辆
-            Route::post('/person/add/vehicle', [PersonVehicleController::class, 'addVehicle']); //添加车辆
-            Route::post('/person/vehicle/detail', [PersonVehicleController::class, 'vehicleDetail']); //车辆详情
-            Route::post('/person/vehicle/detail/save', [PersonVehicleController::class, 'vehicleDetailSave']); //车辆保存
-            Route::post('/person/update/vehicle', [PersonVehicleController::class, 'updateVehicle']); //车辆编辑
-            Route::post('/person/reset/default/channel', [PersonVehicleController::class, 'vehicleDetailReset']); //车辆配置重置
-            Route::post('/person/start/driving',[PersonVehicleController::class,'startDriving']); //开始驾驶
+            Route::post('/person/vehicle/list', [PersonVehicleController::class, 'vehicleList']);
+            Route::post('/person/delete/vehicle', [PersonVehicleController::class, 'deleteVehicle']);
+            Route::post('/person/add/vehicle', [PersonVehicleController::class, 'addVehicle']);
+            Route::post('/person/vehicle/detail', [PersonVehicleController::class, 'vehicleDetail']);
+            Route::post('/person/vehicle/detail/save', [PersonVehicleController::class, 'vehicleDetailSave']);
+            Route::post('/person/update/vehicle', [PersonVehicleController::class, 'updateVehicle']);
+            Route::post('/person/reset/default/channel', [PersonVehicleController::class, 'vehicleDetailReset']);
+            Route::post('/person/start/driving',[PersonVehicleController::class,'startDriving']);
             Route::post('/person/refresh/close',[PersonVehicleController::class,'refreshClose']);
             Route::post('/person/vehicle/battery',[PersonVehicleController::class,'getVehicleBattery']);
             Route::post('/person/switch/remote/control',[PersonVehicleController::class,'switchRemoteControl']);
@@ -171,20 +171,19 @@ Route::group(['middleware' => 'checkAesEntry'], function () { //所有接口走�
     });
     Route::post('/user/one/key/login', [LoginController::class, 'oneKeyLogin']);
 
-    Route::post('/user/login/loginIn', [LoginController::class, 'login']);//前台登陆
-    Route::post('/user/login/save', [LoginController::class, 'register']);//前台注册
-    Route::post('/user/get/login/code', [LoginController::class, 'getLoginCode']);//获取验证码
-    Route::post('/user/startup/page', [IndexController::class, 'startupPage']); //用户端启动页
+    Route::post('/user/login/loginIn', [LoginController::class, 'login']);
+    Route::post('/user/login/save', [LoginController::class, 'register']);
+    Route::post('/user/get/login/code', [LoginController::class, 'getLoginCode']);
+    Route::post('/user/startup/page', [IndexController::class, 'startupPage']);
 
     Route::post('/test/udp', [LoginController::class, 'udp']);
 });
-//微信支付回调
 Route::post('/wechat/notify', [IndexController::class, 'wechatNotify']);
 Route::post('/alipay/notify', [IndexController::class, 'alipayNotify']);
 Route::post('/ks/pay/notify', [IndexController::class, 'ksNotify']);
 
-Route::post('/upload/picture', [LoginController::class, 'uploadPicture']);//上传图片
-Route::post('/user/upload/picture', [LoginController::class, 'uploadPicture']);//上传图片
+Route::post('/upload/picture', [LoginController::class, 'uploadPicture']);
+Route::post('/user/upload/picture', [LoginController::class, 'uploadPicture']);
 
 
 Route::post('/set/key',[VehicleController::class, 'setKey']);
@@ -194,7 +193,4 @@ Route::post('/query/key',[VehicleController::class, 'queryKey']);
 Route::post('/transmitter/bind',[IndexController::class,'transmitterBind']);
 Route::post('/transmitter/un/bind',[IndexController::class,'transmitterUnBind']);
 Route::post('/transmitter/query/bind',[IndexController::class,'transmitterQueryBind']);
-// 快手一键登录
-// 创建订单（快手平台支付宝）
-// 快手支付异步回调
 

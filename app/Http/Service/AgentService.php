@@ -33,7 +33,6 @@ class AgentService
         2=>'遥控船',
         3=>'工程车',
     ];
-    //代理前台用户余额
     public function agentMine($request)
     {
 //        $request = $this->setvice->decrypt($request['data']);

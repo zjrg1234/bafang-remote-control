@@ -17,10 +17,11 @@ class VehicleImage extends Model
 {
     /**
      * The table associated with the model.
-     * 
+     *
      * @var string
      */
     protected $table = 'vehicle_image';
+
 
     /**
      * @var array

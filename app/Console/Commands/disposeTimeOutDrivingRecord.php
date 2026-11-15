@@ -67,17 +67,15 @@ class disposeTimeOutDrivingRecord extends Command
                         'transmitter_id' => '0',//释放发射机id
                     ]);
                 }
-                //已继续驾驶的次数
                 $count = $orderAmount / $rulesAmount;
-                //算出当前结束时间
-                $endTime = $startTime + 10 + ($rulesTime * $count); //增加10秒钟冗余时间 防止接口超时等错误导致误操作
+                $endTime = $startTime + 10 + ($rulesTime * $count);
 
                 if($currentTime > $endTime){
-                    Redis::del($drivingRecord['transmitter_id']); //解绑绑定车辆接收机、发射机id
+                    Redis::del($drivingRecord['transmitter_id']);
                     $drivingRecord->update([
                         'reservation_status' => 4,
                         'end_time'=>$currentTime,
-                        'transmitter_id' => '0',//释放发射机id
+                        'transmitter_id' => '0',
                     ]);
                     $receiverJson = json_decode(Redis::get($drivingRecord['receiver_id'].'_receiver'),true);
                     $receiverJson['transmitter_id'] = '0';
@@ -107,7 +105,7 @@ class disposeTimeOutDrivingRecord extends Command
                     }
                     if($vehicle){
                         $vehicle->update(['vehicle_state' => 1]);
-                        Redis::del('vehicle'.$vehicle['id']); //结束驾驶解锁车
+                        Redis::del('vehicle'.$vehicle['id']);
                     }
                     $this->info('已处理异常单子： ' . $drivingRecord['order_no']);
                     $this->info('解锁车辆 ：' . $vehicle['id']);
@@ -116,21 +114,21 @@ class disposeTimeOutDrivingRecord extends Command
             if($drivingRecord['billing_method'] == 1){ //按次
                 $rulesTime = $billing_rules['time'] * 60;
                 $startTime = $drivingRecord['start_time'];
-                if($startTime === 0 && $drivingRecord['reservation_status'] == 3){ //如果没有开始驾驶时间 脏的单子 直接取消
+                if($startTime === 0 && $drivingRecord['reservation_status'] == 3){
                     $drivingRecord->update([
                         'reservation_status' => 5,
-                        'transmitter_id' => '0',//释放发射机id
+                        'transmitter_id' => '0',
                     ]);
-                    Redis::del($drivingRecord['transmitter_id']); //解绑绑定车辆接收机、发射机id
+                    Redis::del($drivingRecord['transmitter_id']);
 
                 }
                 $endTime = $startTime + 10 + $rulesTime;
                 $time = time();
-                $count = intval(($time - $startTime) / $rulesTime) + 1; //已进行次数
-                $shouldTime = $startTime + ($rulesTime * $count); //当前阶段应该结束时间
-                $shouldTime2 = $shouldTime - $time; //阶段剩余多少时间
-                $shouldTime3 = $rulesTime - $shouldTime2; //阶段时间-剩余时间
-                $rulesAmount = $billing_rules['battery']; //金额
+                $count = intval(($time - $startTime) / $rulesTime) + 1;
+                $shouldTime = $startTime + ($rulesTime * $count);
+                $shouldTime2 = $shouldTime - $time;
+                $shouldTime3 = $rulesTime - $shouldTime2;
+                $rulesAmount = $billing_rules['battery'];
                 $num = $shouldTime3 / $rulesTime;
                 $orderNo = $drivingRecord['order_no'];
                 $orderNoType = 0;

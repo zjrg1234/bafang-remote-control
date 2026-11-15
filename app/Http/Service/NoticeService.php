@@ -92,7 +92,6 @@ class NoticeService
     }
 
 
-    //前端用
     public function notice($request)
     {
 //        $data = [

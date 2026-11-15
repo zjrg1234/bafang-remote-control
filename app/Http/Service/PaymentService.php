@@ -321,7 +321,6 @@ class PaymentService
             for($i = 0; $i <= 9; $i++){
                 $currentDate = Carbon::now()->subMonths($i);
                 $monthStart = $currentDate->copy()->startOfMonth()->timestamp;
-                // 月末：当月最后一天 23:59:59
                 $monthEnd = $currentDate->copy()->endOfMonth()->timestamp;
                 $month[$currentDate->format('Y-m')]= DrivingRecord::whereBetween('order_time', [$monthStart, $monthEnd])->count();
             }
