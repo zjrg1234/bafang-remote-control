@@ -200,7 +200,7 @@ class PaymentService
         }
         if($user['level'] != 1)
         {
-            $list = $list->where('superior_agent_id',$user['agent_id']);
+            $list = $list->where('id',$user['agent_id']);
         }
         if($data['phone']){
             $list->where('phone_number',$data['phone']);
