@@ -36,7 +36,7 @@ class PaymentService
             'end_time'  => $request['end_time'] ?? null,
             'page' => $request['page'] ?? 1,
             'size' => $request['size'] ?? 10,
-            'admin_id' => $request['admin_id'] ?? 0,
+            'admin_id' => $request['uidd'] ?? 0,
         ];
 
 
@@ -186,7 +186,7 @@ class PaymentService
             'special_area' =>   $request['special_area'] ?? null,
             'start_time' => $request['start_time'] ?? null,
             'end_time' => $request['end_time'] ?? null,
-            'admin_id' => $request['admin_id'] ?? 0,
+            'admin_id' => $request['uid'] ?? 0,
         ];
         if($data['special_area']){
             $list = CuserAgent::select('id','agent_name','phone_number','superior_agent_id')->where('id',$data['special_area']);
@@ -278,7 +278,7 @@ class PaymentService
 
     public function Index($request)
     {
-        $adminId = $request['admin_id'] ?? 0;
+        $adminId = $request['uid'] ?? 0;
         if($adminId){
             $user = AdminUser::where('id',$adminId)->first();
         }else{
