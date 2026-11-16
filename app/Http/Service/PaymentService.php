@@ -287,7 +287,14 @@ class PaymentService
         if($user['level'] != 1)
         {
             $cuserAgentId = CuserAgent::where('superior_agent_id',$user['agent_id'])->pluck('id');
-
+            
+            $data = DataCollect::select('total_sale', 'total_make', 'total_payment', 'total_refund')->where('id',1)->first();
+            $start_time = strtotime(date('Y-m-d').' 00:00:00');
+            $end_time = strtotime(date('Y-m-d').' 23:59:59');
+            $data['today_sale'] = DepositLog::where('type',1)->whereBetween('time', [$start_time, $end_time])->sum('amount');
+            $data['today_make'] = DrivingRecord::whereBetween('order_time', [$start_time, $end_time])->count();
+            $data['today_payment'] = DepositLog::where('type',1)->whereBetween('time', [$start_time, $end_time])->count();
+            $data['today_refund'] = ComplainRecord::where('refund_type',1)->whereBetween('time', [$start_time, $end_time])->sum('refund_amount');
 //        $data['today_sale'] = DrivingRecord::where('reservation_status',4)->where('payment_type',1)->whereBetween('order_time', [$start_time, $end_time])->sum('payment_amount');
             $data['total_sale'] = DepositLog::where('type',1)->where('special_area', $user['agent_id'])->sum('amount');
             $data['total_sale'] = intval($data['total_sale']);
