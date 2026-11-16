@@ -290,6 +290,7 @@ class PaymentService
 
 //        $data['today_sale'] = DrivingRecord::where('reservation_status',4)->where('payment_type',1)->whereBetween('order_time', [$start_time, $end_time])->sum('payment_amount');
             $data['total_sale'] = DepositLog::where('type',1)->where('special_area', $user['agent_id'])->sum('amount');
+            $data['total_sale'] = intval($data['total_sale']);
             $data['total_make'] = DrivingRecord::whereIn('agent_id', $cuserAgentId)->count();
             $data['total_payment'] = DepositLog::where('type',1)->where('special_area', $user['agent_id'])->count();
             $data['total_refund'] = ComplainRecord::where('refund_type',1)->sum('refund_amount');
