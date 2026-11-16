@@ -36,7 +36,7 @@ class PaymentService
             'end_time'  => $request['end_time'] ?? null,
             'page' => $request['page'] ?? 1,
             'size' => $request['size'] ?? 10,
-            'admin_id' => $request['uidd'] ?? 0,
+            'admin_id' => $request['uid'] ?? 0,
         ];
 
 
@@ -49,7 +49,7 @@ class PaymentService
         if($user['level'] != 1)
         {
             $cuserAgentId = CuserAgent::where('superior_agent_id',$user['agent_id'])->pluck('id');
-            $list = $list->whereIn('agent_id',$cuserAgentId);
+            $list = $list->whereIn('special_area',$user['agent_id']);
         }
         if($data['pay_type']){
             $list->where('pay_type',$data['pay_type']);
