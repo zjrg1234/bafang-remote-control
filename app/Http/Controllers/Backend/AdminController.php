@@ -33,6 +33,27 @@ class AdminController extends Controller
             return ReponseData::reponseFormat(2001,'未找到该登录用户！');
         }
 
+        // ==========================================
+        // 核心修复：拦截老账号，进行密码平滑升级
+        // 检查数据库密码是否不是标准的 Bcrypt 格式 (Bcrypt 默认以 $2y$ 或 $2a$ 开头)
+        // ==========================================
+        if (!str_starts_with($user->password, '$2y$') && !str_starts_with($user->password, '$2a$')) {
+
+            // 【注意】这里需要替换为你老系统的密码比对逻辑！
+            // 假设老密码是明文：
+//            $isOldPasswordMatch = ($login['password'] === $user->password);
+
+            // 假设老密码是 MD5：
+             $isOldPasswordMatch = (md5($login['password']) === $user->password);
+
+            if ($isOldPasswordMatch) {
+                // 老密码比对成功，立刻将密码洗刷为 Bcrypt 格式并落库
+                $user->password = Hash::make($login['password']);
+                $user->save();
+            } else {
+                return ReponseData::reponseFormat(2002, '账号密码错误！');
+            }
+        }
 //        if($user['level'] == 2){
 //            $resp = [
 //                'uid'=>$user['id'],
