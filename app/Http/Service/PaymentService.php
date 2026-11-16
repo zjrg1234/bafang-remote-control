@@ -49,7 +49,7 @@ class PaymentService
         if($user['level'] != 1)
         {
             $cuserAgentId = CuserAgent::where('superior_agent_id',$user['agent_id'])->pluck('id');
-            $list = $list->whereIn('special_area',$user['agent_id']);
+            $list = $list->where('special_area',$user['agent_id']);
         }
         if($data['pay_type']){
             $list->where('pay_type',$data['pay_type']);
@@ -289,10 +289,11 @@ class PaymentService
             $cuserAgentId = CuserAgent::where('superior_agent_id',$user['agent_id'])->pluck('id');
 
 //        $data['today_sale'] = DrivingRecord::where('reservation_status',4)->where('payment_type',1)->whereBetween('order_time', [$start_time, $end_time])->sum('payment_amount');
-            $data['total_sale'] = DepositLog::where('type',1)->whereIn('agent_id', $cuserAgentId)->sum('amount');
+            $data['total_sale'] = DepositLog::where('type',1)->where('special_area', $user['agent_id'])->sum('amount');
             $data['total_make'] = DrivingRecord::whereIn('agent_id', $cuserAgentId)->count();
-            $data['total_payment'] = DepositLog::where('type',1)->whereIn('agent_id', $cuserAgentId)->count();
-            $data['total_refund'] = ComplainRecord::where('refund_type',1)->whereIn('agent_id', $cuserAgentId)->sum('refund_amount');
+            $data['total_payment'] = DepositLog::where('type',1)->where('agent_id', $user['agent_id'])->count();
+            $data['total_refund'] = ComplainRecord::where('refund_type',1)->sum('refund_amount');
+            $data['total_refund'] = 0;
             $month = [];
             for($i = 0; $i <= 9; $i++){
                 $currentDate = Carbon::now()->subMonths($i);
